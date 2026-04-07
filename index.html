@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özcan Gaming Store | Oyuncu Ekipmanları ve Bilgisayar</title>
+    <meta name="description" content="Özcan Gaming Store'da en iyi ekran kartları, işlemciler, gaming laptoplar ve oyuncu bilgisayarı donanımları. Performans burada başlar!">
+    <meta name="keywords" content="özcan gaming store, bilgisayar parçaları, oyuncu bilgisayarı, rtx 4090, hazır sistem, gaming laptop">
+    <meta name="author" content="Özcan Gaming">
+    <meta name="robots" content="index, follow">
+    <!-- Favicon Stop: Tarayıcının ikon ararken yükleme durumunda takılmasını engeller -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <div id="demo-banner" style="background: #e31e24; color: white; text-align: center; padding: 10px; font-weight: bold; position: relative; z-index: 9999;">
+        DİKKAT: Bu site sadece bir portfolyo (demo) projesidir. Gerçek bir satış/POS altyapısı yoktur ve gerçek bir alışveriş yapılamaz.
+    </div>
+    <div id="scroll-progress"></div>
+    <div id="app">
+        <!-- Navigation -->
+        <header class="navbar">
+            <div class="container">
+                <div class="nav-left">
+                    <a href="#" class="logo" id="nav-home">
+                        <span class="logo-red">ÖZCAN</span>GAMING
+                    </a>
+                </div>
+                <div class="nav-center">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Ürün, kategori veya marka ara..." id="search-input">
+                        <button id="search-btn"><i data-lucide="search"></i></button>
+                        <div id="search-results" class="search-results-dropdown"></div>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <button class="nav-icon-btn" id="nav-auth" title="Giriş / Kayıt">
+                        <i data-lucide="user"></i>
+                        <span>Giriş</span>
+                    </button>
+                    <button class="nav-icon-btn" id="nav-wishlist" title="Favoriler">
+                        <i data-lucide="heart"></i>
+                        <span class="badge" id="wishlist-badge">0</span>
+                    </button>
+                    <button class="nav-icon-btn" id="nav-cart" title="Sepetim">
+                        <i data-lucide="shopping-cart"></i>
+                        <span class="badge" id="cart-badge">0</span>
+                        <span>0.00 TL</span>
+                    </button>
+                    <button class="nav-icon-btn admin-link hidden" id="nav-admin" title="Yönetim Paneli">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Admin</span>
+                    </button>
+                </div>
+            </div>
+            
+            <nav class="categories-nav">
+                <div class="container">
+                    <ul id="category-list">
+                        <li><a href="#shop" data-category="all" class="active">TÜM ÜRÜNLER</a></li>
+                        <li><a href="#" data-category="gpu">EKRAN KARTI</a></li>
+                        <li><a href="#" data-category="cpu">İŞLEMCİ</a></li>
+                        <li><a href="#" data-category="mainboard">ANAKART</a></li>
+                        <li><a href="#" data-category="ram">BELLEK (RAM)</a></li>
+                        <li><a href="#" data-category="case">KASA</a></li>
+                        <li><a href="#" data-category="laptop">LAPTOP</a></li>
+                        <li><a href="#" data-category="monitor">MONİTÖR</a></li>
+                        <li><a href="#" data-category="accessories">AKSESUAR</a></li>
+                        <li><a href="#" data-category="wishlist" style="color: var(--bg-accent); font-weight: 800;">FAVORİLERİM</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Dynamic content will be injected here -->
+        </main>
+
+        <!-- Newsletter Section -->
+        <section class="newsletter-section">
+            <div class="container">
+                <div class="newsletter-content">
+                    <h2>Fırsatları Kaçırmayın!</h2>
+                    <p>En yeni donanımlardan ve özel indirimlerden ilk siz haberdar olun.</p>
+                    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Kayıt Başarılı!');">
+                        <input type="email" placeholder="E-posta adresiniz" required>
+                        <button type="submit" class="btn-primary">ABONE OL</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Bar -->
+        <section class="trust-bar">
+            <div class="container">
+                <div class="trust-grid">
+                    <div class="trust-item">
+                        <i data-lucide="truck"></i>
+                        <h4>Hızlı Teslimat</h4>
+                        <p>24 saat içinde kargoya verilir.</p>
+                    </div>
+                    <div class="trust-item">
+                        <i data-lucide="shield-check"></i>
+                        <h4>Güvenli Ödeme</h4>
+                        <p>256-bit SSL korumalı ödeme.</p>
+                    </div>
+                    <div class="trust-item">
+                        <i data-lucide="headset"></i>
+                        <h4>7/24 Destek</h4>
+                        <p>Canlı destek ve hızlı çözüm.</p>
+                    </div>
+                    <div class="trust-item">
+                        <i data-lucide="rotate-ccw"></i>
+                        <h4>Kolay İade</h4>
+                        <p>14 gün içinde koşulsuz iade.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-info">
+                        <h3>ÖZCAN <span class="text-red">GAMING</span></h3>
+                        <p>Gamer camiasının yeni adresi. En güncel donanımlar, en uygun fiyatlar.</p>
+                        <div class="social-links">
+                            <i data-lucide="instagram"></i>
+                            <i data-lucide="twitter"></i>
+                            <i data-lucide="youtube"></i>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>KURUMSAL</h4>
+                        <ul>
+                            <li><a href="#about">Hakkımızda</a></li>
+                            <li><a href="#bank">Banka Hesap Bilgileri</a></li>
+                            <li><a href="#contact">İletişim</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>MÜŞTERİ HİZMETLERİ</h4>
+                        <ul>
+                            <li><a href="#warranty">Garanti ve İade</a></li>
+                            <li><a href="#shipping">Kargo Takip</a></li>
+                            <li><a href="#faq">Sıkça Sorulan Sorular</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Özcan Gaming Store. Tüm hakları saklıdır.</p>
+                    <div class="payment-icons">
+                        <i data-lucide="credit-card"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Overlays (Cart Sidebar etc.) -->
+        <div id="cart-drawer" class="drawer">
+            <div class="drawer-header">
+                <h3>Sepetim</h3>
+                <button class="close-drawer" id="close-cart"><i data-lucide="x"></i></button>
+            </div>
+            <div class="drawer-body" id="cart-items-container">
+                <!-- Cart items list -->
+            </div>
+            <div class="drawer-footer">
+                <div class="total-price">
+                    <span>Toplam:</span>
+                    <span id="cart-total">0.00 TL</span>
+                </div>
+                <button class="btn-primary full-width" onclick="window.location.hash = 'checkout'">Siparişi Tamamla</button>
+            </div>
+        </div>
+        <div id="overlay" class="overlay"></div>
+        <div id="scroll-to-top" title="Yukarı Dön"><i data-lucide="arrow-up"></i></div>
+        <div id="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/data.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
