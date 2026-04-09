@@ -1697,27 +1697,7 @@ const App = {
     },
 
     spinWheel() {
-        if (localStorage.getItem('wheelSpun')) {
-            alert('Çarkıfelek hakkınızı zaten kullandınız!');
-            return;
-        }
-        
-        const wheel = document.getElementById('wheel-spinner');
-        const btn = document.getElementById('spin-btn');
-        const res = document.getElementById('wheel-result');
-        
-        btn.disabled = true;
-        
-        // Rastgele 1000 ile 3000 derece arası dönüş
-        const randomDegree = Math.floor(Math.random() * 2000) + 1000;
-        wheel.style.transform = `rotate(${randomDegree}deg)`;
 
-        setTimeout(() => {
-            res.style.display = 'block';
-            res.innerText = 'Tebrikler! Sepette %10 Özel Özcan İndirimi Kazandınız! (Kod: OZCAN10)';
-            localStorage.setItem('wheelSpun', 'true');
-        }, 3000);
-    },
 
     showCrossSell(product) {
         let suggestedCategory = 'accessories';
@@ -1753,10 +1733,3 @@ const App = {
 
 window.App = App;
 App.init();
-
-// Çarkıfeleği otomatik göster
-setTimeout(() => {
-    if(!localStorage.getItem('wheelSpun') && document.getElementById('wheel-modal')) {
-        document.getElementById('wheel-modal').style.display = 'flex';
-    }
-}, 3000);
