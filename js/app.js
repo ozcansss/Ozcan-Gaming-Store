@@ -986,16 +986,68 @@ const App = {
             return;
         }
 
+        const totalRevenue = Store.state.orders.reduce((sum, o) => sum + o.total, 0);
+
         container.innerHTML = `
-            <div class="container">
-                <h2 class="mb-2">Yönetim Paneli</h2>
-                <div class="admin-grid">
-                    <div class="admin-sidebar">
-                        <button class="btn-primary full-width mb-1" id="btn-add-product">Yeni Ürün Ekle</button>
+            <div class="container" style="padding:2rem 0;">
+                <div class="section-header"><h2>Özcan Gaming Yönetim Paneli</h2></div>
+                
+                <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
+                    <div style="background:var(--bg-secondary); padding:20px; border-radius:8px; flex:1; min-width:200px; text-align:center;">
+                        <i data-lucide="shopping-bag" style="width:32px; height:32px; color:var(--text-red); margin-bottom:10px;"></i>
+                        <h3>Siparişler</h3>
+                        <p style="font-size:2rem; font-weight:bold; color:var(--text-red);">${Store.state.orders.length}</p>
                     </div>
-                    <div class="admin-content">
-                        <h3>Ürün Listesi</h3>
-                        <div id="admin-product-list"></div>
+                    <div style="background:var(--bg-secondary); padding:20px; border-radius:8px; flex:1; min-width:200px; text-align:center;">
+                        <i data-lucide="dollar-sign" style="width:32px; height:32px; color:var(--bg-accent); margin-bottom:10px;"></i>
+                        <h3>Toplam Ciro</h3>
+                        <p style="font-size:2rem; font-weight:bold; color:var(--bg-accent);">${totalRevenue.toLocaleString('tr-TR')} ₺</p>
+                    </div>
+                    <div style="background:var(--bg-secondary); padding:20px; border-radius:8px; flex:1; min-width:200px; text-align:center;">
+                        <i data-lucide="package" style="width:32px; height:32px; color:#10b981; margin-bottom:10px;"></i>
+                        <h3>Katalog Ürünleri</h3>
+                        <p style="font-size:2rem; font-weight:bold; color:#10b981;">${Store.state.products.length}</p>
+                    </div>
+                </div>
+
+                <div class="admin-grid" style="display:grid; grid-template-columns: 250px 1fr; gap:20px;">
+                    <div class="admin-sidebar" style="background:var(--bg-secondary); padding:1rem; border-radius:8px; height:fit-content;">
+                        <button class="btn-primary full-width mb-1" id="btn-add-product" style="padding:15px;"><i data-lucide="plus"></i> Yeni Ürün Ekle</button>
+                        <hr style="border-color:var(--border-color); margin: 15px 0;">
+                        <div style="color:var(--text-primary); font-weight:bold; margin-bottom:10px; opacity:0.7;">Hızlı İşlemler</div>
+                        <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px;">
+                            <li><button class="btn-outline full-width" onclick="alert('Kupon sistemi güncelleniyor.')"><i data-lucide="tag"></i> İndirim Yönetimi</button></li>
+                            <li><button class="btn-outline full-width" onclick="alert('Google Analytics Desteği Kapalı.')"><i data-lucide="bar-chart"></i> Detaylı Raporlar</button></li>
+                        </ul>
+                    </div>
+                    <div class="admin-content" style="background:var(--bg-secondary); padding:1.5rem; border-radius:8px;">
+                        
+                        <div id="admin-orders-sec" style="margin-bottom:30px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+                                <h3>Son Siparişler</h3>
+                                <span style="font-size:0.8rem; color:var(--bg-accent);">${Store.state.orders.length} Bekleyen</span>
+                            </div>
+                            <div style="max-height:300px; overflow-y:auto; padding-right:5px;">
+                            ${Store.state.orders.length > 0 ? [...Store.state.orders].reverse().map(o => `
+                                <div style="background:var(--bg-elevation); padding:15px; border-radius:6px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <strong style="color:var(--text-primary);">Sipariş #${o.id}</strong><br>
+                                        <span style="font-size:0.85rem; color:var(--text-muted);">${o.date} - ${o.name} - ${o.items.length} Ürün Kalemi</span>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <strong style="color:var(--bg-accent)">${o.total.toLocaleString('tr-TR')} ₺</strong><br>
+                                        <span style="font-size:0.75rem; background:#10b981; color:#fff; padding:2px 6px; border-radius:4px; margin-top:5px; display:inline-block;">Hazırlanıyor</span>
+                                    </div>
+                                </div>
+                            `).join('') : '<p class="text-muted" style="text-align:center; padding:20px;">Henüz sistemde hiç sipariş kaydı bulunmuyor.</p>'}
+                            </div>
+                        </div>
+
+                        <div id="admin-products-sec">
+                            <h3 style="border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">Mağaza Ürün Envanteri</h3>
+                            <div id="admin-product-list" style="display:grid; grid-template-columns:1fr; gap:10px; max-height:500px; overflow-y:auto; padding-right:5px;"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1008,17 +1060,23 @@ const App = {
 
     renderAdminProductList() {
         const listContainer = document.getElementById('admin-product-list');
+        if(!listContainer) return;
+
         listContainer.innerHTML = Store.state.products.map(p => `
-            <div class="admin-product-item">
-                <div class="info">
-                    <strong>${p.name}</strong>
-                    <span>${p.price} TL - ${p.category}</span>
+            <div class="admin-product-item" style="background:var(--bg-elevation); padding:10px 15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="info" style="display:flex; align-items:center; gap:15px;">
+                    <img src="${(p.images&&p.images[0])?p.images[0]:p.image}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/40x40/161616/e31e24'">
+                    <div>
+                        <strong style="display:block; color:var(--text-primary); font-size:0.9rem;">${p.name}</strong>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">${p.brand} | ${App.categoryNames[p.category]||p.category} | ${p.price.toLocaleString('tr-TR')} ₺</span>
+                    </div>
                 </div>
                 <div class="actions">
-                    <button class="text-red" onclick="App.deleteProduct(${p.id})">Sil</button>
+                    <button class="text-red" onclick="App.deleteProduct(${p.id})" style="background:transparent; border:1px solid var(--text-red); padding:5px 10px; border-radius:4px; cursor:pointer; color:var(--text-red); font-size:0.8rem;"><i data-lucide="trash-2" style="width:14px; margin-bottom:-2px;"></i> Sil</button>
                 </div>
             </div>
         `).join('');
+        lucide.createIcons();
     },
 
     deleteProduct(id) {
