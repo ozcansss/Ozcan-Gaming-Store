@@ -363,14 +363,14 @@ const App = {
                 window.DISQUS.reset({
                     reload: true,
                     config: function () {
-                        this.page.identifier = 'product_' + productId;
-                        this.page.url = window.location.origin + window.location.pathname + '?ürün_id=' + productId;
+                        this.page.identifier = 'item_' + productId;
+                        this.page.url = window.location.origin + window.location.pathname + '?item=' + productId;
                     }
                 });
             } else {
                 window.disqus_config = function () {
-                    this.page.identifier = 'product_' + productId;
-                    this.page.url = window.location.origin + window.location.pathname + '?ürün_id=' + productId;
+                    this.page.identifier = 'item_' + productId;
+                    this.page.url = window.location.origin + window.location.pathname + '?item=' + productId;
                 };
                 var d = document, s = d.createElement('script');
                 s.src = 'https://ozcan-gaming-store.disqus.com/embed.js';
