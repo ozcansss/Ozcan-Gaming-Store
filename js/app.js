@@ -918,10 +918,9 @@ const App = {
                         </div>
                         <button type="submit" class="btn-primary full-width">Giriş Yap</button>
                     </form>
-                    <div class="text-center mt-1">
+                    <div class="text-center mt-1" style="padding-bottom: 10px;">
                         Henüz hesabınız yok mu? <a href="#register" class="text-red">Kayıt Ol</a>
                     </div>
-                    <p class="mt-1" style="font-size: 0.8rem; color: var(--text-muted);">Admin: admin@ozcan.com / admin123</p>
                 </div>
             </div>
         `;
