@@ -343,6 +343,8 @@ const App = {
                     </ul>
                 </div>
 
+                ${App.guessFPS(product)}
+
                 <div class="section-header"><h2>Yorumlar ve Değerlendirmeler</h2></div>
                 <div class="comments-section" style="margin-bottom: 40px;">
                     <div id="disqus_thread" style="margin-top: 30px; background:var(--bg-secondary); padding:20px; border-radius:12px;"></div>
@@ -456,6 +458,73 @@ const App = {
         }).join('');
         lucide.createIcons();
         this.initTiltEffect();
+    },
+
+    renderOrdersPage(container) {
+        if (!Store.state.currentUser) {
+            window.location.hash = 'login';
+            return;
+        }
+
+        const myOrders = Store.state.orders.filter(o => o.userId === Store.state.currentUser.email || o.name === Store.state.currentUser.name);
+
+        container.innerHTML = `
+            <div class="container" style="padding: 3rem 0;">
+                <div class="section-header"><h2>Siparişlerim ve Kargo Takip</h2></div>
+                ${myOrders.length === 0 ? '<p class="text-center text-muted" style="padding:40px;">Henüz aktif bir siparişiniz bulunmuyor.</p>' : 
+                myOrders.reverse().map(o => `
+                    <div style="background:var(--bg-secondary); padding:2rem; border-radius:12px; margin-bottom:20px; border:1px solid var(--border-color);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:15px; margin-bottom:20px;">
+                            <div>
+                                <h3 style="color:var(--text-primary);">Sipariş #${o.id}</h3>
+                                <p style="color:var(--text-muted); font-size:0.9rem;">${o.date} tarihinde verildi</p>
+                            </div>
+                            <div style="text-align:right;">
+                                <strong style="font-size:1.2rem; color:var(--bg-accent);">${o.total.toLocaleString('tr-TR')} ₺</strong>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar (Sipariş Takip Animasyonu) -->
+                        <div style="margin-bottom:30px; position:relative; max-width:800px; margin-left:auto; margin-right:auto;">
+                            <div style="height:4px; background:var(--bg-elevation); border-radius:4px; width:100%; position:absolute; top:20px; z-index:1;"></div>
+                            <div style="height:4px; background:#10b981; border-radius:4px; width:40%; position:absolute; top:20px; z-index:2; transition:width 1s;"></div>
+                            
+                            <div style="display:flex; justify-content:space-between; position:relative; z-index:3;">
+                                <div style="text-align:center;">
+                                    <div style="width:40px; height:40px; border-radius:50%; background:#10b981; color:white; display:flex; justify-content:center; align-items:center; margin:0 auto 10px auto; font-weight:bold;">1</div>
+                                    <span style="font-size:0.8rem; font-weight:bold; color:#10b981;">Sipariş Alındı</span>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="width:40px; height:40px; border-radius:50%; background:#10b981; color:white; display:flex; justify-content:center; align-items:center; margin:0 auto 10px auto; font-weight:bold;">2</div>
+                                    <span style="font-size:0.8rem; font-weight:bold; color:#10b981;">Hazırlanıyor</span>
+                                </div>
+                                <div style="text-align:center; opacity:0.4;">
+                                    <div style="width:40px; height:40px; border-radius:50%; background:var(--bg-elevation); border:2px solid var(--border-color); color:var(--text-muted); display:flex; justify-content:center; align-items:center; margin:0 auto 10px auto; font-weight:bold;">3</div>
+                                    <span style="font-size:0.8rem; font-weight:bold;">Kargoda</span>
+                                </div>
+                                <div style="text-align:center; opacity:0.4;">
+                                    <div style="width:40px; height:40px; border-radius:50%; background:var(--bg-elevation); border:2px solid var(--border-color); color:var(--text-muted); display:flex; justify-content:center; align-items:center; margin:0 auto 10px auto; font-weight:bold;">4</div>
+                                    <span style="font-size:0.8rem; font-weight:bold;">Teslim Edildi</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 style="margin-bottom:10px;">Sipariş Detayı</h4>
+                            <ul style="list-style:none; padding:0;">
+                                ${o.items.map(i => `
+                                    <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border-color); font-size:0.9rem;">
+                                        <span>${i.quantity}x ${i.name}</span>
+                                        <span>${(i.price * i.quantity).toLocaleString('tr-TR')} ₺</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        lucide.createIcons();
     },
 
     renderContactPage(container) {
@@ -1583,8 +1652,111 @@ const App = {
             this.renderProductDetailPage(document.getElementById('main-content'), productId);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+    },
+
+    guessFPS(product) {
+        if (!['gpu', 'cpu', 'laptop', 'oem'].includes(product.category)) return '';
+        
+        let csgo = 200, cyber = 60, valo = 250;
+        
+        if (product.name.includes('4090')) { csgo = 850; cyber = 145; valo = 900; }
+        else if (product.name.includes('4080')) { csgo = 650; cyber = 110; valo = 700; }
+        else if (product.name.includes('4070')) { csgo = 450; cyber = 85; valo = 550; }
+        else if (product.name.includes('4060') || product.name.includes('3060')) { csgo = 350; cyber = 65; valo = 400; }
+        else if (product.price > 20000) { csgo = 500; cyber = 90; valo = 600; }
+        else { csgo = 250; cyber = 45; valo = 300; }
+
+        const calcWidth = (val, max) => Math.min(100, Math.max(10, (val / max) * 100));
+
+        return `
+            <div style="margin:2rem 0; padding:2rem; background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border-color);">
+                <h2 style="color:var(--bg-accent); margin-bottom:20px; display:flex; align-items:center; gap:10px;"><i data-lucide="crosshair"></i> Oyun Performans Analizi (Tahmini)</h2>
+                
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Counter Strike 2 (1080p Ultra)</span> <strong style="color:#10b981;">${csgo} FPS</strong></div>
+                    <div style="height:12px; background:var(--bg-elevation); border-radius:6px; overflow:hidden;">
+                        <div style="height:100%; width:${calcWidth(csgo, 900)}%; background:#10b981; border-radius:6px; transition:width 1.5s;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Valorant (1080p Yüksek)</span> <strong style="color:#3b82f6;">${valo} FPS</strong></div>
+                    <div style="height:12px; background:var(--bg-elevation); border-radius:6px; overflow:hidden;">
+                        <div style="height:100%; width:${calcWidth(valo, 900)}%; background:#3b82f6; border-radius:6px; transition:width 1.5s;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Cyberpunk 2077 (1440p RT Açık)</span> <strong style="color:var(--text-red);">${cyber} FPS</strong></div>
+                    <div style="height:12px; background:var(--bg-elevation); border-radius:6px; overflow:hidden;">
+                        <div style="height:100%; width:${calcWidth(cyber, 150)}%; background:var(--text-red); border-radius:6px; transition:width 1.5s;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    spinWheel() {
+        if (localStorage.getItem('wheelSpun')) {
+            alert('Çarkıfelek hakkınızı zaten kullandınız!');
+            return;
+        }
+        
+        const wheel = document.getElementById('wheel-spinner');
+        const btn = document.getElementById('spin-btn');
+        const res = document.getElementById('wheel-result');
+        
+        btn.disabled = true;
+        
+        // Rastgele 1000 ile 3000 derece arası dönüş
+        const randomDegree = Math.floor(Math.random() * 2000) + 1000;
+        wheel.style.transform = \`rotate(\${randomDegree}deg)\`;
+
+        setTimeout(() => {
+            res.style.display = 'block';
+            res.innerText = 'Tebrikler! Sepette %10 Özel Özcan İndirimi Kazandınız! (Kod: OZCAN10)';
+            localStorage.setItem('wheelSpun', 'true');
+        }, 3000);
+    },
+
+    showCrossSell(product) {
+        let suggestedCategory = 'accessories';
+        if (product.category === 'gpu' || product.category === 'cpu') suggestedCategory = 'cooling';
+        if (product.category === 'mainboard') suggestedCategory = 'ram';
+        if (product.category === 'laptop') suggestedCategory = 'accessories';
+        
+        const suggestedProducts = Store.state.products.filter(p => p.category === suggestedCategory);
+        if (suggestedProducts.length === 0) return;
+        
+        const randomProduct = suggestedProducts[Math.floor(Math.random() * suggestedProducts.length)];
+        
+        const modal = document.getElementById('cross-sell-modal');
+        const content = document.getElementById('cross-sell-content');
+        
+        if(!modal || !content) return;
+
+        content.innerHTML = `
+            <button onclick="document.getElementById('cross-sell-modal').style.display='none'" style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i data-lucide="x"></i></button>
+            <h3 style="color:#10b981; margin-bottom:15px;">Bunu Alanlar Bunu da Aldı!</h3>
+            <img src="\${(randomProduct.images && randomProduct.images[0]) ? randomProduct.images[0] : (randomProduct.image || 'https://via.placeholder.com/150')}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; margin-bottom:15px;">
+            <h4 style="margin-bottom:5px;">\${randomProduct.name}</h4>
+            <p style="color:var(--bg-accent); font-weight:bold; font-size:1.2rem; margin-bottom:15px;">\${randomProduct.price.toLocaleString('tr-TR')} TL</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Aldığınız bu ürünün tam performans göstermesi için sistemimiz size bu tamamlayıcıyı öneriyor.</p>
+            <button class="btn-primary full-width" onclick="Store.addToCart(\${JSON.stringify(randomProduct).replace(/"/g, '&quot;')}); document.getElementById('cross-sell-modal').style.display='none';">BUNU DA SEPETE EKLE</button>
+            <button class="btn-outline full-width mt-1" onclick="document.getElementById('cross-sell-modal').style.display='none'">İstemiyorum, Teşekkürler</button>
+        `;
+        
+        modal.style.display = 'flex';
+        lucide.createIcons();
     }
 };
 
 window.App = App;
 App.init();
+
+// Çarkıfeleği otomatik göster
+setTimeout(() => {
+    if(!localStorage.getItem('wheelSpun') && document.getElementById('wheel-modal')) {
+        document.getElementById('wheel-modal').style.display = 'flex';
+    }
+}, 3000);

@@ -121,7 +121,14 @@ const Store = {
             this.state.cart.push({ ...product, quantity });
         }
         this.saveCart();
-        if (window.App) window.App.showToast(`${product.name} sepete eklendi!`, 'shopping-cart');
+        
+        if (window.App) {
+            window.App.showToast(`${product.name} sepete eklendi!`, 'shopping-cart');
+            // Çapraz satış penceresini (Bunu alanlar bunu da aldı) tetikle
+            setTimeout(() => {
+                if(typeof window.App.showCrossSell === 'function') window.App.showCrossSell(product);
+            }, 500);
+        }
     },
 
     removeFromCart(productId) {
