@@ -1710,7 +1710,7 @@ const App = {
         
         // Rastgele 1000 ile 3000 derece arası dönüş
         const randomDegree = Math.floor(Math.random() * 2000) + 1000;
-        wheel.style.transform = \`rotate(\${randomDegree}deg)\`;
+        wheel.style.transform = `rotate(${randomDegree}deg)`;
 
         setTimeout(() => {
             res.style.display = 'block';
@@ -1738,11 +1738,11 @@ const App = {
         content.innerHTML = `
             <button onclick="document.getElementById('cross-sell-modal').style.display='none'" style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i data-lucide="x"></i></button>
             <h3 style="color:#10b981; margin-bottom:15px;">Bunu Alanlar Bunu da Aldı!</h3>
-            <img src="\${(randomProduct.images && randomProduct.images[0]) ? randomProduct.images[0] : (randomProduct.image || 'https://via.placeholder.com/150')}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; margin-bottom:15px;">
-            <h4 style="margin-bottom:5px;">\${randomProduct.name}</h4>
-            <p style="color:var(--bg-accent); font-weight:bold; font-size:1.2rem; margin-bottom:15px;">\${randomProduct.price.toLocaleString('tr-TR')} TL</p>
+            <img src="${(randomProduct.images && randomProduct.images[0]) ? randomProduct.images[0] : (randomProduct.image || 'https://via.placeholder.com/150')}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; margin-bottom:15px;">
+            <h4 style="margin-bottom:5px;">${randomProduct.name}</h4>
+            <p style="color:var(--bg-accent); font-weight:bold; font-size:1.2rem; margin-bottom:15px;">${randomProduct.price.toLocaleString('tr-TR')} TL</p>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Aldığınız bu ürünün tam performans göstermesi için sistemimiz size bu tamamlayıcıyı öneriyor.</p>
-            <button class="btn-primary full-width" onclick="Store.addToCart(\${JSON.stringify(randomProduct).replace(/"/g, '&quot;')}); document.getElementById('cross-sell-modal').style.display='none';">BUNU DA SEPETE EKLE</button>
+            <button class="btn-primary full-width" onclick="Store.addToCart(${JSON.stringify(randomProduct).replace(/"/g, '&quot;')}); document.getElementById('cross-sell-modal').style.display='none';">BUNU DA SEPETE EKLE</button>
             <button class="btn-outline full-width mt-1" onclick="document.getElementById('cross-sell-modal').style.display='none'">İstemiyorum, Teşekkürler</button>
         `;
         
