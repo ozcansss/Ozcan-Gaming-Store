@@ -1696,9 +1696,6 @@ const App = {
         `;
     },
 
-    spinWheel() {
-
-
     showCrossSell(product) {
         let suggestedCategory = 'accessories';
         if (product.category === 'gpu' || product.category === 'cpu') suggestedCategory = 'cooling';
