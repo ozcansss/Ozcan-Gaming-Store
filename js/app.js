@@ -10,6 +10,9 @@ const App = {
         monitor: "Monitör",
         peripherals: "Ekipmanlar",
         storage: "Depolama",
+        cooling: "Soğutucu & Fan",
+        psu: "Güç Kaynağı (PSU)",
+        oem: "Hazır Sistem",
         wishlist: "Favorilerim"
     },
 
@@ -35,14 +38,26 @@ const App = {
         // Categories
         document.querySelectorAll('#category-list a').forEach(link => {
             link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const category = e.target.dataset.category;
+                const category = e.currentTarget.dataset.category;
+                const href = e.currentTarget.getAttribute('href');
 
+                if (href && href.startsWith('#') && href !== '#shop') {
+                    // Eğer link doğrudan bir hash rotasyona sahipse (örn: #builder) ona izin ver.
+                    if (category) {
+                         // İstisna varsa
+                    } else {
+                         return; // default davranışı engelleme (ki href çalışsın)
+                    }
+                }
+
+                e.preventDefault();
                 if (category === 'wishlist') {
                     window.location.hash = 'wishlist';
+                } else if (href === '#builder' || e.currentTarget.id === 'nav-builder') {
+                    window.location.hash = 'builder';
                 } else {
                     document.querySelectorAll('#category-list a').forEach(l => l.classList.remove('active'));
-                    e.target.classList.add('active');
+                    e.currentTarget.classList.add('active');
                     Store.setCategory(category);
                     window.location.hash = 'shop'; // Mağaza sayfasına git
                 }
@@ -159,6 +174,23 @@ const App = {
             this.updateAuthUI();
         });
 
+        window.addEventListener('compareUpdated', () => {
+            this.renderCompareBar();
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                const isLight = document.body.classList.contains('light-theme');
+                localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            });
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        }
+
         // Routing (Simplistic)
         window.addEventListener('hashchange', () => this.handleRouting());
         this.handleRouting();
@@ -168,6 +200,21 @@ const App = {
         const hash = window.location.hash;
         const main = document.getElementById('main-content');
         
+        // Page Loading Bar Animation
+        const loader = document.getElementById('top-loader');
+        if (loader) {
+            loader.style.opacity = '1';
+            loader.style.width = '30%';
+            setTimeout(() => loader.style.width = '70%', 100);
+            setTimeout(() => {
+                loader.style.width = '100%';
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.width = '0', 300);
+                }, 300);
+            }, 300);
+        }
+
         // Product Detail Route check (e.g., #product/1)
         if (hash.startsWith('#product/')) {
             const productId = parseInt(hash.split('/')[1]);
@@ -215,6 +262,12 @@ const App = {
                 break;
             case '#orders':
                 this.renderOrdersPage(main);
+                break;
+            case '#builder':
+                this.renderBuilderPage(main);
+                break;
+            case '#compare':
+                this.renderComparePage(main);
                 break;
             default:
                 this.renderHomePage(main);
@@ -286,8 +339,40 @@ const App = {
                 <div class="detail-tabs">
                     <div class="section-header"><h2>Ürün Özellikleri</h2></div>
                     <ul class="features-list">
-                        ${(product.features || ['Yüksek Performans', '2 Yıl Garanti', 'Hızlı Teslimat']).map(f => `<li><i data-lucide="check-circle"></i> ${f}</li>`).join('')}
+                        ${[...(product.features || []), ...App.getExtraFeatures(product.category)].map((f, i, arr) => arr.indexOf(f) === i ? `<li><i data-lucide="check-circle" style="color:var(--bg-accent);"></i> ${f}</li>` : '').join('')}
                     </ul>
+                </div>
+
+                <div class="section-header"><h2>Yorumlar ve Değerlendirmeler</h2></div>
+                <div class="comments-section" style="margin-bottom: 40px;">
+                    ${(product.comments && product.comments.length > 0) ? product.comments.map(c => `
+                        <div class="comment-card">
+                            <div class="comment-header">
+                                <strong>${c.user}</strong>
+                                <span class="comment-date">${c.date}</span>
+                            </div>
+                            <div class="comment-stars">
+                                ${Array(c.rating).fill('<i data-lucide="star" style="color:#facc15; fill:#facc15; width:14px;"></i>').join('')}
+                                ${Array(5-c.rating).fill('<i data-lucide="star" style="color:#4b5563; width:14px;"></i>').join('')}
+                            </div>
+                            <p class="comment-text">${c.text}</p>
+                        </div>
+                    `).join('') : '<p class="text-muted" id="no-comments">Bu ürün için henüz yorum yapılmamış.</p>'}
+                    
+                    <div id="comment-form-container" style="margin-top:30px; background:var(--bg-secondary); padding:20px; border-radius:12px;">
+                        <h4>Yorum Yaz</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">* Değerlendirmeniz sistem yöneticisi onayından sonra yayınlanacaktır (Demo Modu: Yerel tarayıcıda hemen yansır).</p>
+                        <input type="text" id="new-comment-user" placeholder="İsim / Rumuz" style="width:100%; border-radius:6px; background:var(--bg-elevation); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; margin-bottom:10px;" required>
+                        <select id="new-comment-rating" style="width:100%; border-radius:6px; background:var(--bg-elevation); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; margin-bottom:10px;">
+                            <option value="5">5 Yıldız - Mükemmel</option>
+                            <option value="4">4 Yıldız - Çok İyi</option>
+                            <option value="3">3 Yıldız - Ortalama</option>
+                            <option value="2">2 Yıldız - Kötü</option>
+                            <option value="1">1 Yıldız - Berbat</option>
+                        </select>
+                        <textarea id="new-comment-text" placeholder="Ürün hakkında düşünceleriniz..." style="width:100%; font-family:inherit; min-height:80px; border-radius:6px; background:var(--bg-elevation); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; margin-bottom:10px;" required></textarea>
+                        <button class="btn-primary" onclick="App.addComment(${product.id})" style="width:100%;">Tavsiyemi Gönder</button>
+                    </div>
                 </div>
 
                 ${this.renderRecentlyViewedHTML()}
@@ -375,6 +460,7 @@ const App = {
             `;
         }).join('');
         lucide.createIcons();
+        this.initTiltEffect();
     },
 
     renderContactPage(container) {
@@ -554,6 +640,7 @@ const App = {
 
         grid.innerHTML = featuredProducts.map(p => this.createProductCardHTML(p)).join('');
         lucide.createIcons();
+        this.initTiltEffect();
     },
 
     renderStorePage(container) {
@@ -562,12 +649,47 @@ const App = {
                 <div class="section-header">
                     <h2>${App.categoryNames[Store.state.currentCategory] || Store.state.currentCategory.toUpperCase()}</h2>
                 </div>
-                <div id="product-grid" class="product-grid"></div>
-                <div id="pagination" class="pagination"></div>
+                <div class="store-layout">
+                    <aside class="store-sidebar">
+                        <div class="filter-group">
+                            <h4>Fiyat Aralığı</h4>
+                            <input type="number" id="filter-min" placeholder="Min TL" value="${Store.state.minPrice === 0 ? '' : Store.state.minPrice}">
+                            <input type="number" id="filter-max" placeholder="Max TL" value="${Store.state.maxPrice === Infinity ? '' : Store.state.maxPrice}">
+                            <button class="btn-primary full-width" style="padding: 10px; font-size: 0.8rem;" onclick="App.applyPriceFilter()">Uygula</button>
+                        </div>
+                        <div class="filter-group">
+                            <h4>Sıralama</h4>
+                            <select id="filter-sort" onchange="App.applySort(this.value)">
+                                <option value="default" ${Store.state.sortBy === 'default' ? 'selected' : ''}>Varsayılan</option>
+                                <option value="price-asc" ${Store.state.sortBy === 'price-asc' ? 'selected' : ''}>En Ucuz</option>
+                                <option value="price-desc" ${Store.state.sortBy === 'price-desc' ? 'selected' : ''}>En Pahalı</option>
+                            </select>
+                        </div>
+                    </aside>
+                    <div class="store-main">
+                        <div id="product-grid" class="product-grid"></div>
+                        <div id="pagination" class="pagination"></div>
+                    </div>
+                </div>
             </div>
         `;
         this.renderProducts();
         this.renderPagination();
+    },
+
+    applyPriceFilter() {
+        const min = parseFloat(document.getElementById('filter-min').value) || 0;
+        const max = parseFloat(document.getElementById('filter-max').value) || Infinity;
+        Store.state.minPrice = min;
+        Store.state.maxPrice = max;
+        Store.state.currentPage = 1;
+        Store.applyFilters();
+    },
+
+    applySort(val) {
+        Store.state.sortBy = val;
+        Store.state.currentPage = 1;
+        Store.applyFilters();
     },
 
     createProductCardHTML(p) {
@@ -585,6 +707,12 @@ const App = {
                     <button class="wishlist-btn ${Store.state.wishlist.some(w => w.id === p.id) ? 'active' : ''}" 
                             onclick="event.stopPropagation(); Store.toggleWishlist(${JSON.stringify(p).replace(/"/g, '&quot;')})">
                         <i data-lucide="heart"></i>
+                    </button>
+                </div>
+                <div class="compare-btn-pos">
+                    <button class="compare-btn ${Store.state.compare.some(c => c.id === p.id) ? 'active' : ''}" 
+                            onclick="event.stopPropagation(); Store.toggleCompare(${JSON.stringify(p).replace(/"/g, '&quot;')}); App.handleRouting();" title="Karşılaştır">
+                        <i data-lucide="bar-chart-2"></i>
                     </button>
                 </div>
                 <img src="${displayImage}" alt="${p.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x300/161616/e31e24?text=Açılmadı'">
@@ -612,6 +740,28 @@ const App = {
 
         grid.innerHTML = products.map(p => this.createProductCardHTML(p)).join('');
         lucide.createIcons();
+        this.initTiltEffect();
+    },
+
+    initTiltEffect() {
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -12; // Max 12 deg tilt
+                const rotateY = ((x - centerX) / centerX) * 12;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+                card.style.transition = 'none'; // removing transition during movement makes it snappy
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
+                card.style.transition = 'transform 0.5s ease-out'; // smooth return
+            });
+        });
     },
 
     renderPagination() {
@@ -673,12 +823,31 @@ const App = {
             `;
         }).join('');
 
-        const total = Store.state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        let total = Store.state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        if (Store.state.discountRate > 0) {
+            total = total * (1 - Store.state.discountRate);
+            cartTotalDisplay.parentElement.innerHTML = `<span>Toplam (<span style="color:var(--bg-accent)">%${Store.state.discountRate*100} İndirim</span>):</span> <span id="cart-total">${total.toLocaleString('tr-TR')} TL</span>`;
+        } else {
+            cartTotalDisplay.parentElement.innerHTML = `<span>Toplam:</span> <span id="cart-total">${total.toLocaleString('tr-TR')} TL</span>`;
+        }
+        
         const totalStr = total.toLocaleString('tr-TR') + ' TL';
-        cartTotalDisplay.innerText = totalStr;
         if (navCartTotal) navCartTotal.innerText = totalStr;
 
         lucide.createIcons();
+    },
+
+    applyCoupon() {
+        const input = document.getElementById('coupon-input');
+        if (!input) return;
+        const code = input.value.trim();
+        if (Store.applyDiscountCode(code)) {
+            this.showToast('Kupon başarıyla uygulandı!', 'check');
+            this.renderCart();
+        } else {
+            this.showToast('Geçersiz kupon kodu!', 'alert-circle');
+            this.renderCart();
+        }
     },
 
     updateBadges() {
@@ -737,11 +906,11 @@ const App = {
                     <form id="login-form">
                         <div class="form-group">
                             <label>E-posta</label>
-                            <input type="email" id="login-email" required placeholder="admin@ozcan.com">
+                            <input type="email" id="login-email" required placeholder="isim@ornek.com">
                         </div>
                         <div class="form-group">
                             <label>Şifre</label>
-                            <input type="password" id="login-pass" required placeholder="admin123">
+                            <input type="password" id="login-pass" required placeholder="********">
                         </div>
                         <button type="submit" class="btn-primary full-width">Giriş Yap</button>
                     </form>
@@ -1082,6 +1251,277 @@ const App = {
                 if (toast.parentNode) container.removeChild(toast);
             }, 300);
         }, 3000);
+    },
+
+    renderCompareBar() {
+        const bar = document.getElementById('compare-bar');
+        const itemsContainer = document.getElementById('compare-items-bar');
+        const count = document.getElementById('compare-count');
+        
+        if (!bar || !itemsContainer || !count) return;
+
+        const compareItems = Store.state.compare;
+        count.innerText = compareItems.length;
+
+        if (compareItems.length > 0) {
+            bar.classList.add('active');
+            itemsContainer.innerHTML = compareItems.map(p => `
+                <div class="compare-item-mini">
+                    <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/30px')}" alt="${p.name}">
+                    <span style="font-size:0.8rem; font-weight:bold; max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</span>
+                    <button onclick="Store.removeFromCompare(${p.id}); App.renderCompareBar();" style="color:var(--text-muted);"><i data-lucide="x" style="width:14px;"></i></button>
+                </div>
+            `).join('');
+        } else {
+            bar.classList.remove('active');
+        }
+        lucide.createIcons();
+    },
+
+    renderComparePage(container) {
+        const items = Store.state.compare;
+        if (items.length === 0) {
+            container.innerHTML = `
+                <div class="container text-center" style="padding: 5rem 0;">
+                    <h2>Karşılaştırma Listesi Boş</h2>
+                    <p class="text-muted mb-2">Karşılaştırmak istediğiniz ürünleri ürün kartlarındaki karşılaştırma butonuna tıklayarak ekleyebilirsiniz.</p>
+                    <a href="#shop" class="btn-primary" style="display:inline-flex;">Ürünlere Göz At</a>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="container" style="padding: 3rem 0;">
+                <div class="section-header">
+                    <h2>Ürün Karşılaştırma</h2>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Özellikler</th>
+                                ${items.map(p => `
+                                    <th>
+                                        <button onclick="Store.removeFromCompare(${p.id}); App.renderComparePage(document.getElementById('main-content'));" style="color:var(--bg-accent); margin-bottom:10px;"><i data-lucide="trash-2"></i> Listeden Çıkar</button>
+                                        <br>
+                                        <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/150px')}">
+                                        <h4 style="font-size:1rem; margin-bottom:10px;">${p.name}</h4>
+                                        <div style="font-size:1.5rem; color:var(--bg-accent); font-weight:bold;">${p.price.toLocaleString('tr-TR')} TL</div>
+                                        <button class="btn-primary full-width mt-1" onclick="Store.addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})">Sepete Ekle</button>
+                                    </th>
+                                `).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Marka</strong></td>
+                                ${items.map(p => `<td>${p.brand}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td><strong>Kategori</strong></td>
+                                ${items.map(p => `<td>${App.categoryNames[p.category] || p.category.toUpperCase()}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td><strong>Bağlantı & Diğer T.</strong></td>
+                                ${items.map(p => `
+                                    <td style="text-align:left; font-size:0.85rem; color:var(--text-muted);">
+                                        <ul style="list-style-type:none; padding-left:0;">
+                                            ${App.getExtraFeatures(p.category).map(f => `<li style="margin-bottom:4px;">- ${f}</li>`).join('')}
+                                        </ul>
+                                    </td>
+                                `).join('')}
+                            </tr>
+                            <tr>
+                                <td><strong>Açıklama</strong></td>
+                                ${items.map(p => `<td style="font-size:0.85rem; color:var(--text-muted);">${p.description || '-'}</td>`).join('')}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    },
+
+    builderSteps: [
+        { id: 'cpu', name: 'İşlemci (CPU)', category: 'cpu' },
+        { id: 'mainboard', name: 'Anakart', category: 'mainboard' },
+        { id: 'ram', name: 'Bellek (RAM)', category: 'ram' },
+        { id: 'gpu', name: 'Ekran Kartı', category: 'gpu' },
+        { id: 'storage', name: 'Depolama', category: 'storage' },
+        { id: 'cooling', name: 'Soğutma', category: 'cooling' },
+        { id: 'psu', name: 'Güç Kaynağı', category: 'psu' },
+        { id: 'case', name: 'Kasa', category: 'case' }
+    ],
+    currentBuilderStep: 0,
+
+    renderBuilderPage(container) {
+        const step = this.builderSteps[this.currentBuilderStep];
+        const state = Store.state.builder;
+
+        // Hesaplamalar
+        const totalCost = Object.values(state).reduce((sum, item) => sum + (item ? item.price : 0), 0);
+        const allCompleted = Object.values(state).every(item => item !== null);
+
+        let html = `
+            <div class="container" style="padding: 3rem 0;">
+                <div class="section-header text-center" style="border:none;">
+                    <h2>PC Toplama Sihirbazı <i data-lucide="cpu" style="width:30px;height:30px;color:var(--bg-accent);"></i></h2>
+                    <p class="text-muted">Hayalinizdeki sistemi adım adım toplayın.</p>
+                </div>
+                
+                <div class="builder-steps">
+                    ${this.builderSteps.map((s, index) => `
+                        <div class="builder-step ${index === this.currentBuilderStep ? 'active' : ''} ${state[s.id] ? 'completed' : ''}" 
+                             onclick="App.currentBuilderStep = ${index}; App.renderBuilderPage(document.getElementById('main-content'));">
+                            ${index + 1}. ${s.name} ${state[s.id] ? '<i data-lucide="check-circle" style="width:14px; display:inline-block; margin-left:5px;"></i>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="store-layout">
+                    <div class="store-main">
+                        <h3 class="mb-1">${step.name} Seçimi</h3>
+                        <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+                            ${Store.state.products.filter(p => p.category === step.category).map(p => {
+                                const isSelected = state[step.id] && state[step.id].id === p.id;
+                                return `
+                                    <article class="product-card ${isSelected ? 'selected-item' : ''}" style="${isSelected ? 'border-color: #10b981; box-shadow: 0 0 15px rgba(16,185,129,0.3);' : ''}">
+                                        <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/200x200')}" class="product-image">
+                                        <div class="product-brand">${p.brand}</div>
+                                        <h3 class="product-title" style="font-size:0.85rem; height:40px;">${p.name}</h3>
+                                        <div class="product-footer">
+                                            <div class="product-price" style="font-size:1.1rem;">${p.price.toLocaleString('tr-TR')} TL</div>
+                                            <button class="btn-${isSelected ? 'outline' : 'primary'}" onclick="App.selectBuilderItem('${step.id}', ${p.id})">
+                                                ${isSelected ? 'Seçildi <i data-lucide="check"></i>' : 'Seç'}
+                                            </button>
+                                        </div>
+                                    </article>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                    <aside class="store-sidebar">
+                        <h4>Sistem Özeti</h4>
+                        <div class="builder-summary-item">
+                            <span>İşlemci:</span>
+                            <strong style="text-align:right;">${state.cpu ? state.cpu.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>Anakart:</span>
+                            <strong style="text-align:right;">${state.mainboard ? state.mainboard.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>RAM:</span>
+                            <strong style="text-align:right;">${state.ram ? state.ram.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>Ekran K.:</span>
+                            <strong style="text-align:right;">${state.gpu ? state.gpu.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>Depolama:</span>
+                            <strong style="text-align:right;">${state.storage ? state.storage.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>Soğutma:</span>
+                            <strong style="text-align:right;">${state.cooling ? state.cooling.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>Güç Kay.:</span>
+                            <strong style="text-align:right;">${state.psu ? state.psu.name : '-'}</strong>
+                        </div>
+                        <div class="builder-summary-item">
+                            <span>Kasa:</span>
+                            <strong style="text-align:right;">${state.case ? state.case.name : '-'}</strong>
+                        </div>
+                        
+                        <div style="margin-top:20px; font-size:1.2rem; font-weight:900; color:var(--bg-accent); text-align:center;">
+                            Toplam: ${totalCost.toLocaleString('tr-TR')} TL
+                        </div>
+                        
+                        <button class="btn-primary full-width mt-1" 
+                                onclick="App.addAllBuilderToCart()" 
+                                ${!allCompleted ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                            TÜMÜNÜ SEPETE EKLE
+                        </button>
+                    </aside>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        lucide.createIcons();
+    },
+
+    selectBuilderItem(stepId, productId) {
+        const product = Store.state.products.find(p => p.id === productId);
+        Store.state.builder[stepId] = product;
+        if (this.currentBuilderStep < this.builderSteps.length - 1) {
+            this.currentBuilderStep++;
+        }
+        this.renderBuilderPage(document.getElementById('main-content'));
+    },
+
+    addAllBuilderToCart() {
+        const state = Store.state.builder;
+        Object.values(state).forEach(product => {
+            if (product) Store.addToCart(product);
+        });
+        this.showToast('Tüm PC bileşenleri sepete eklendi!', 'cpu');
+        window.location.hash = 'checkout';
+    },
+
+    getExtraFeatures(category) {
+        const extras = {
+            gpu: ["NVIDIA DLSS / AMD FSR Gelişmiş Desteği", "Gerçek Zamanlı Işın İzleme (Ray Tracing) Çekirdekleri", "PCIe 4.0 Uyumluluğu", "3 Adet DisplayPort, 1 Adet HDMI", "Genişletilmiş Bakır Soğutma Boruları", "0dB (Sıfır Ses) Zero-Fan Teknolojisi"],
+            cpu: ["Yüksek Çoklu Çekirdek Performansı", "Gelişmiş L3 Önbellek (Cache)", "DDR5 / DDR4 Çift Platform Desteği", "Optimize Edilmiş TDP Değerleri", "Termal Kontrol Algoritması"],
+            mainboard: ["M.2 Termal Shield (Soğutmalı) Yuvalar", "Çift Kanal DDR Mimarisi", "Gelişmiş Dijital VRM Güç Besleme", "5V ve 12V Çoklu ARGB/RGB Başlıkları", "2.5G LAN ve Düşük Gecikmeli Ağ İletişimi", "PCI-E Güçlendirilmiş Çelik Zırh Desteği"],
+            ram: ["Yüksek Kaliteli Alüminyum Isı Dağıtıcıları", "XMP / EXPO Destekli Otomatik Hız Aşırtma", "Düşük Gecikme Saniyesi (CL) Akıcılığı", "Ömür Boyu Sınırlı Marka Garantisi"],
+            case: ["Çizilmeye Dayanıklı Kalın Temperli Cam Yan Panel", "Yüksek Hava Akışlı Hava Filtreli Mesh Ön Panel", "Geniş Kablo Yönetim Alanı", "ATX, Micro-ATX, Mini-ITX Tam Uyum", "Dahili aRGB Kumandalı Işıklandırma Sistemi"],
+            monitor: ["NVIDIA G-Sync & AMD FreeSync Uyumlu", "Titreşim Engelleme (Flicker-Free)", "Düşük Mavi Işık Göz Koruma Filtresi", "VESA Standardı Duvara Montaj Uyumu", "Ultra İnce Çerçeveli Ergonomik Çizgi"],
+            laptop: ["Yeni Nesil Çok Kanallı Wi-Fi ve Bluetooth", "Özelleştirilebilir RGB Oyuncu Klavyesi", "Buhar Odacıklı veya Bakır Borulu Sıvı Soğutma", "Hızlı Uyanma (Instant Wake) Özelliği", "İnce, Hafif ve Taşınabilir Alüminyum Şasi"],
+            accessories: ["Kopmaya Karşı Örgü Kaplama Koruyucu Kablo", "Altın Uçlu Gecikmesiz Konnektörler", "Özelleştirilebilir Yazılım Desteği", "Uzun Süreli Ergonomik Konfor Tasarımı"],
+            storage: ["Gelişmiş 3D NAND Çok Katmanlı Mimari", "Ultra Yüksek Hızda Sıralı/Rastgele Okuma ve Yazma", "Şok ve Titreşimlere Karşı Kusursuz Dayanıklılık", "Pasif Anakart Soğutucu Blok Tam Uyumlu"],
+            cooling: ["Ultra Sessiz Geometrik Kanat Tasarımı", "Örgülü, Bükülmeye Dirençli Soğutma Hortumları", "Saf Bakır Taban Kontağı", "Zorlu Şartlara Dayanıklı Pompa / Fan Motoru"],
+            psu: ["OVP/OPP/UVP Endüstriyel Koruma Protokolleri", "Aktif PFC (%99) Kusursuz Enerji Verimliliği", "Isıya Dirençli %100 Japon Kondansatörler", "Sessizlik Odaklı Smart Fan Karakteristiği"],
+            oem: ["2 Yıl Ücretsiz Özcan Gaming Garantisi", "Mühendislerimiz Tarafından Kablolama ve Tam Montaj Yapılmıştır", "12 Saati Aşan Ağır Stres ve Sıcaklık Testleri", "Aydınlatmalı ve Yüksek Soğutmalı Oyuncu Kasası", "Prize Tak-Kullan Özel Konfigürasyon", "Donanım Özelleştirmesine Açık Tasarım"]
+        };
+        const defaultExtras = ["Distribütör Garantili Orijinal Ürün", "Aynı Gün Güvenli Kargo Seçeneği", "Destek ve Kurulum Hizmeti"];
+        return extras[category] || defaultExtras;
+    },
+
+    addComment(productId) {
+        const userInp = document.getElementById('new-comment-user').value.trim();
+        const textInp = document.getElementById('new-comment-text').value.trim();
+        const ratingInp = document.getElementById('new-comment-rating').value;
+
+        if (!userInp || !textInp) {
+            this.showToast('Lütfen isminizi ve yorumunuzu giriniz.', 'alert-circle');
+            return;
+        }
+
+        const product = Store.state.products.find(p => p.id === productId);
+        if (product) {
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('tr-TR');
+            
+            if (!product.comments) product.comments = [];
+            
+            product.comments.push({
+                user: userInp,
+                date: dateStr,
+                rating: parseInt(ratingInp),
+                text: textInp
+            });
+
+            Store.saveProducts(); // Bu localStorage'a yazar, yenilemede kaybolmaz
+            this.showToast('Yorumunuz onaylandı ve yayınlandı!', 'check-circle');
+            
+            // Re-render
+            this.renderProductDetailPage(document.getElementById('main-content'), productId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 };
 

@@ -2,7 +2,7 @@
     // GPU (EKRAN KARTLARI)
     {
         id: 1, name: "ASUS ROG STRIX GeForce RTX 4090 24GB GDDR6X", category: "gpu", brand: "ASUS", price: 95000.00,
-        images: ["https://media.ldlc.com/r1600/ld/products/00/06/07/12/LD0006071243.jpg", "https://www.incehesap.com/resim/urun/202312/65814fa7d1aac8.47247038_lgpnqijhfkoem_500.webp"],
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/rog-strix-rtx4090-o24g-gaming-0_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/rog-strix-rtx4090-24g-gaming-2-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/rog-strix-rtx4090-24g-gaming-4-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/rog-strix-rtx4090-24g-gaming-14-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/rog-strix-rtx4090-24g-gaming-16-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/rog-strix-rtx4090-24g-gaming-20-1_large.jpg"],
         description: "Dünyanın en güçlü ekran kartı. Ada Lovelace mimarisi ve üstün soğutma.",
         features: ["24GB GDDR6X", "Aura Sync RGB", "DLSS 3.5"],
         comments: [{ user: "Hakan", date: "12.04.2024", rating: 5, text: "Kutusu çok büyük, kart zaten devasa." }]
@@ -517,7 +517,7 @@
         category: "cooling",
         brand: "ARCTIC",
         price: 4500.00,
-        images: ["https://inventus.com.tr/Images/products/v3/14057_01.jpg", "https://inventus.com.tr/Images/products/v3/14057_02.jpg", "https://inventus.com.tr/Images/products/v3/14057_07.jpg", "https://inventus.com.tr/Images/products/v3/14057_08.jpg"],
+        images: ["https://inventus.com.tr/Images/products/v3/zoomed/14057_01.jpg", "https://inventus.com.tr/Images/products/v3/zoomed/14057_02.jpg", "https://inventus.com.tr/Images/products/v3/zoomed/14057_07.jpg", "https://inventus.com.tr/Images/products/v3/zoomed/14057_08.jpg"],
         description: "Anakart VRM'lerini soğutan özel pompa tasarımı.",
         features: ["PWM Pompa", "Gömülü Fan (VRM)", "Kalın Radyatör"],
         comments: []
@@ -668,9 +668,75 @@
         description: "Geniş yüzey, 360 derece RGB aydınlatma ve USB hub.",
         features: ["930mm x 400mm Boyut", "3 Bölmeli RGB", "Düşük Sürtünmeli Kumaş"],
         comments: []
+    },
+    // PSU (GÜÇ KAYNAĞI)
+    {
+        id: 62,
+        name: "ASUS ROG Thor 1000W Platinum II OLED",
+        category: "psu",
+        brand: "ASUS",
+        price: 9500.00,
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/134876-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/134876-2_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/134876-4_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/134876-5_large.jpg"],
+        description: "Anlık güç tüketimini gösteren OLED ekranlı, sessiz güç kaynağı.",
+        features: ["1000W", "80+ Platinum", "OLED Ekran", "Aura Sync RGB"],
+        comments: []
+    },
+    {
+        id: 63,
+        name: "Corsair RM850x 850W 80+ Gold Fully Modular",
+        category: "psu",
+        brand: "CORSAIR",
+        price: 4500.00,
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/corsair/thumb/129674_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/corsair/thumb/129674-2_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/corsair/thumb/129674-3_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/corsair/thumb/129674-4_large.jpg"],
+        description: "Güvenilir ve popüler Gold sertifikalı oyuncu güç kaynağı.",
+        features: ["850W", "80+ Gold", "Tam Modüler", "Zero RPM Modu"],
+        comments: []
+    },
+    {
+        id: 64,
+        name: "MSI MPG A850G PCIE5 850W 80+ Gold",
+        category: "psu",
+        brand: "MSI",
+        price: 4800.00,
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/137052-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/137052-2_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/137052-3_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/137052-5_large.jpg"],
+        description: "ATX 3.0 ve PCIe 5.0 (12VHPWR) uyumlu yeni nesil PSU.",
+        features: ["850W", "80+ Gold", "ATX 3.0 Uyumlu", "Tam Modüler"],
+        comments: []
+    },
+    // HAZIR SİSTEMLER (OEM)
+    {
+        id: 65,
+        name: "Özcan Gaming Epic Sistem (INTEL I5 12400F - RTX 5060 - H610M - 500GB M.2 SSD - 16GB RAM)",
+        category: "oem",
+        brand: "ÖZCAN PREMIUM",
+        price: 39999.00,
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oem/thumb/vtn-pkt-mw5-1_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oem/thumb/2-110_large.jpg"],
+        description: "En üst düzey 2K/4K oyun deneyimi için tasarlanmış yenilmez e-spor ve yayın sistemi. Tamamı montajlı ve test edilmiştir.",
+        features: ["Intel Core i7 13700K İşlemci", "GeForce RTX 4070 Ti 12GB Ekran Kartı", "32GB (2x16) DDR5 6000MHz RAM", "1TB Gen4 M.2 SSD", "850W 80+ Gold PSU", "Windows 11 Pro İşletim Sistemi"],
+        comments: []
+    },
+    {
+        id: 66,
+        name: "Özcan Gaming Alpha Sistem (AMD R5 5500 - RTX 5060 - A520M - 500GB M.2 SSD - 16GB RAM)",
+        category: "oem",
+        brand: "ÖZCAN PERFORMANCE",
+        price: 36500.00,
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oem/thumb/vtn-pkt-3d56_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oem/thumb/individual-1-f1m650bbm-27_large.jpg"],
+        description: "Fiyat / Performans arayanlar için yüksek FPS garantili, modern ve kompakt hazır sistem.",
+        features: ["AMD Ryzen 5 7600X İşlemci", "GeForce RTX 4060 Ti 8GB Ekran Kartı", "16GB DDR5 5200MHz RAM", "500GB M.2 Nvme SSD", "650W 80+ Bronze PSU"],
+        comments: []
+    },
+    {
+        id: 67,
+        name: "Özcan Gaming Starter Sistem (AMD R5 7500F - RTX 5060 - A620M DDR5 - 500GB SSD - 16GB RAM)",
+        category: "oem",
+        brand: "ÖZCAN STARTER",
+        price: 21999.00,
+        images: ["https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oem/thumb/vtn-pkt-681-11_large.jpg", "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oem/thumb/kasa-899_large.jpg"],
+        description: "Oyuna yeni adım atanlar için bütçe dostu, güncel tüm oyunları kasmadan oynatan ekonomik kasa.",
+        features: ["Intel Core i5 12400F İşlemci", "GeForce RTX 3060 12GB Ekran Kartı", "16GB (2x8) DDR4 3200MHz RAM", "500GB SSD", "600W PSU"],
+        comments: []
     }
-
-
 ];
 
 window.initialProducts = initialProducts;

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
+    <div id="top-loader" style="position: fixed; top: 0; left: 0; height: 3px; background: #e31e24; z-index: 10000; width: 0; transition: width 0.3s ease, opacity 0.3s ease;"></div>
     <div id="demo-banner" style="background: #e31e24; color: white; text-align: center; padding: 10px; font-weight: bold; position: relative; z-index: 9999;">
         DİKKAT: Bu site sadece bir portfolyo (demo) projesidir. Gerçek bir satış/POS altyapısı yoktur ve gerçek bir alışveriş yapılamaz.
     </div>
@@ -57,6 +58,10 @@
                         <i data-lucide="layout-dashboard"></i>
                         <span>Admin</span>
                     </button>
+                    <button class="nav-icon-btn" id="theme-toggle" title="Tema Değiştir">
+                        <i data-lucide="sun"></i>
+                        <span>Tema</span>
+                    </button>
                 </div>
             </div>
             
@@ -69,9 +74,14 @@
                         <li><a href="#" data-category="mainboard">ANAKART</a></li>
                         <li><a href="#" data-category="ram">BELLEK (RAM)</a></li>
                         <li><a href="#" data-category="case">KASA</a></li>
+                        <li><a href="#" data-category="storage">DEPOLAMA</a></li>
+                        <li><a href="#" data-category="cooling">SOĞUTMA</a></li>
+                        <li><a href="#" data-category="psu">GÜÇ KAYNAĞI</a></li>
+                        <li><a href="#" data-category="oem" style="color: #10b981; font-weight: 800;">HAZIR SİSTEM</a></li>
                         <li><a href="#" data-category="laptop">LAPTOP</a></li>
                         <li><a href="#" data-category="monitor">MONİTÖR</a></li>
                         <li><a href="#" data-category="accessories">AKSESUAR</a></li>
+                        <li><a href="#builder" id="nav-builder" style="color: #3b82f6; font-weight: 800;">PC TOPLAMA</a></li>
                         <li><a href="#" data-category="wishlist" style="color: var(--bg-accent); font-weight: 800;">FAVORİLERİM</a></li>
                     </ul>
                 </div>
@@ -174,6 +184,10 @@
                 <!-- Cart items list -->
             </div>
             <div class="drawer-footer">
+                <div class="coupon-section" id="coupon-box">
+                    <input type="text" id="coupon-input" placeholder="Kupon Kodunuz">
+                    <button class="btn-outline" onclick="App.applyCoupon()">Uygula</button>
+                </div>
                 <div class="total-price">
                     <span>Toplam:</span>
                     <span id="cart-total">0.00 TL</span>
@@ -184,6 +198,16 @@
         <div id="overlay" class="overlay"></div>
         <div id="scroll-to-top" title="Yukarı Dön"><i data-lucide="arrow-up"></i></div>
         <div id="toast-container"></div>
+        
+        <!-- Compare Floating Bar -->
+        <div id="compare-bar">
+            <div class="container compare-container">
+                <div class="compare-items" id="compare-items-bar">
+                    <!-- Dinamik -->
+                </div>
+                <button class="btn-primary" onclick="window.location.hash = 'compare'">Karşılaştır (<span id="compare-count">0</span>)</button>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

@@ -12,7 +12,13 @@ const Store = {
         currentCategory: 'all',
         users: [],
         orders: [],
-        recentlyViewed: []
+        recentlyViewed: [],
+        compare: [],
+        discountRate: 0,
+        sortBy: 'default',
+        minPrice: 0,
+        maxPrice: Infinity,
+        builder: { cpu: null, mainboard: null, ram: null, gpu: null, storage: null, cooling: null, psu: null, case: null }
     },
 
     init() {
@@ -21,13 +27,20 @@ const Store = {
         if (savedProducts) {
             const parsed = JSON.parse(savedProducts);
             
-            // Veri Senkronizasyonu: data.js dosyasındaki her değişikliği algıla
-            // Stringify karşılaştırması en garantisidir (id, resim, açıklama her şeyi kapsar)
-            const isDataChanged = window.initialProducts && JSON.stringify(window.initialProducts) !== savedProducts;
+            // Veri Senkronizasyonu: Sadece yeni ürün eklendiğinde güncelle (yorumların silinmemesi için)
+            const isDataChanged = window.initialProducts && window.initialProducts.length !== parsed.length;
 
             if (isDataChanged) {
-                console.log("Veri değişikliği algılandı, güncelleniyor...");
-                this.state.products = window.initialProducts || [];
+                console.log("Yeni ürünler algılandı, veritabanı eşitleniyor...");
+                // Eski ürünlerdeki yorumları koruyarak yeni listeyi oluştur
+                const mergedProducts = window.initialProducts.map(initialProduct => {
+                    const savedProduct = parsed.find(p => p.id === initialProduct.id);
+                    if (savedProduct && savedProduct.comments) {
+                        initialProduct.comments = savedProduct.comments;
+                    }
+                    return initialProduct;
+                });
+                this.state.products = mergedProducts;
                 this.saveProducts();
             } else {
                 this.state.products = parsed;
@@ -56,13 +69,12 @@ const Store = {
         const savedPage = localStorage.getItem('currentPage');
         if (savedPage) this.state.currentPage = parseInt(savedPage);
 
-        // Load users
         const savedUsers = localStorage.getItem('users_db');
         if (savedUsers) {
             this.state.users = JSON.parse(savedUsers);
         } else {
-            // Default admin
-            const admin = { name: 'Özcan Admin', email: 'admin@ozcan.com', password: 'admin123', role: 'admin' };
+            // Default admin (Obfuscated visually)
+            const admin = { name: 'Kurucu', email: 'ozcan@ozcangaming.com', password: btoa('gizliSifreOZC@N!'), role: 'admin' };
             this.state.users = [admin];
             localStorage.setItem('users_db', JSON.stringify(this.state.users));
         }
@@ -167,6 +179,16 @@ const Store = {
             );
         }
 
+        // Fiyat Filtresi
+        filtered = filtered.filter(p => p.price >= this.state.minPrice && p.price <= this.state.maxPrice);
+
+        // Sıralama
+        if (this.state.sortBy === 'price-asc') {
+            filtered.sort((a, b) => a.price - b.price);
+        } else if (this.state.sortBy === 'price-desc') {
+            filtered.sort((a, b) => b.price - a.price);
+        }
+
         this.state.filteredProducts = filtered;
         window.dispatchEvent(new CustomEvent('productsUpdated'));
     },
@@ -209,8 +231,12 @@ const Store = {
         return { success: true };
     },
 
-    login(email, password) {
-        const user = this.state.users.find(u => u.email === email && u.password === password);
+    login(email, pass) {
+        let thePass = pass;
+        if (email === 'ozcan@ozcangaming.com') {
+             thePass = btoa(pass); // Base64 encoding comparison
+        }
+        const user = this.state.users.find(u => u.email === email && u.password === thePass);
         if (user) {
             this.state.currentUser = user;
             this.state.isAdmin = user.role === 'admin';
@@ -253,6 +279,38 @@ const Store = {
     clearCart() {
         this.state.cart = [];
         this.saveCart();
+    },
+
+    toggleCompare(product) {
+        const index = this.state.compare.findIndex(p => p.id === product.id);
+        if (index > -1) {
+            this.state.compare.splice(index, 1);
+        } else {
+            if (this.state.compare.length >= 3) {
+                if(window.App) window.App.showToast('En fazla 3 ürün karşılaştırabilirsiniz!', 'alert-triangle');
+                return;
+            }
+            this.state.compare.push(product);
+        }
+        window.dispatchEvent(new CustomEvent('compareUpdated'));
+    },
+
+    removeFromCompare(id) {
+        this.state.compare = this.state.compare.filter(p => p.id !== id);
+        window.dispatchEvent(new CustomEvent('compareUpdated'));
+    },
+
+    applyDiscountCode(code) {
+        const validCodes = ['GAMER10', 'OZCAN10'];
+        if (validCodes.includes(code.toUpperCase())) {
+            this.state.discountRate = 0.10; // %10 indirim
+            return true;
+        } else if (code.toUpperCase() === 'CILGINYUZDE50') {
+            this.state.discountRate = 0.50; // %50 indirim
+            return true;
+        }
+        this.state.discountRate = 0;
+        return false;
     }
 };
 
