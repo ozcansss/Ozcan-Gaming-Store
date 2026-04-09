@@ -345,34 +345,7 @@ const App = {
 
                 <div class="section-header"><h2>Yorumlar ve Değerlendirmeler</h2></div>
                 <div class="comments-section" style="margin-bottom: 40px;">
-                    ${(product.comments && product.comments.length > 0) ? product.comments.map(c => `
-                        <div class="comment-card">
-                            <div class="comment-header">
-                                <strong>${c.user}</strong>
-                                <span class="comment-date">${c.date}</span>
-                            </div>
-                            <div class="comment-stars">
-                                ${Array(c.rating).fill('<i data-lucide="star" style="color:#facc15; fill:#facc15; width:14px;"></i>').join('')}
-                                ${Array(5-c.rating).fill('<i data-lucide="star" style="color:#4b5563; width:14px;"></i>').join('')}
-                            </div>
-                            <p class="comment-text">${c.text}</p>
-                        </div>
-                    `).join('') : '<p class="text-muted" id="no-comments">Bu ürün için henüz yorum yapılmamış.</p>'}
-                    
-                    <div id="comment-form-container" style="margin-top:30px; background:var(--bg-secondary); padding:20px; border-radius:12px;">
-                        <h4>Yorum Yaz</h4>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">* Değerlendirmeniz sistem yöneticisi onayından sonra yayınlanacaktır (Demo Modu: Yerel tarayıcıda hemen yansır).</p>
-                        <input type="text" id="new-comment-user" placeholder="İsim / Rumuz" style="width:100%; border-radius:6px; background:var(--bg-elevation); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; margin-bottom:10px;" required>
-                        <select id="new-comment-rating" style="width:100%; border-radius:6px; background:var(--bg-elevation); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; margin-bottom:10px;">
-                            <option value="5">5 Yıldız - Mükemmel</option>
-                            <option value="4">4 Yıldız - Çok İyi</option>
-                            <option value="3">3 Yıldız - Ortalama</option>
-                            <option value="2">2 Yıldız - Kötü</option>
-                            <option value="1">1 Yıldız - Berbat</option>
-                        </select>
-                        <textarea id="new-comment-text" placeholder="Ürün hakkında düşünceleriniz..." style="width:100%; font-family:inherit; min-height:80px; border-radius:6px; background:var(--bg-elevation); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; margin-bottom:10px;" required></textarea>
-                        <button class="btn-primary" onclick="App.addComment(${product.id})" style="width:100%;">Tavsiyemi Gönder</button>
-                    </div>
+                    <div id="disqus_thread" style="margin-top: 30px; background:var(--bg-secondary); padding:20px; border-radius:12px;"></div>
                 </div>
 
                 ${this.renderRecentlyViewedHTML()}
@@ -383,6 +356,28 @@ const App = {
         this.totalSlides = images.length;
         lucide.createIcons();
         window.scrollTo(0, 0);
+
+        // --- DISQUS YÜKLEME / YENİLEME MANTIĞI ---
+        setTimeout(() => {
+            if (window.DISQUS) {
+                window.DISQUS.reset({
+                    reload: true,
+                    config: function () {
+                        this.page.identifier = 'product-' + productId;
+                        this.page.url = window.location.href.split('#')[0] + '#product/' + productId;
+                    }
+                });
+            } else {
+                window.disqus_config = function () {
+                    this.page.identifier = 'product-' + productId;
+                    this.page.url = window.location.href.split('#')[0] + '#product/' + productId;
+                };
+                var d = document, s = d.createElement('script');
+                s.src = 'https://ozcan-gaming-store.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            }
+        }, 100);
     },
 
     renderRecentlyViewedHTML() {
@@ -716,7 +711,12 @@ const App = {
                     </button>
                 </div>
                 <img src="${displayImage}" alt="${p.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x300/161616/e31e24?text=Açılmadı'">
-                <div class="product-brand">${p.brand}</div>
+                <div class="product-brand" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>${p.brand}</span>
+                    <span class="disqus-comment-count" data-disqus-identifier="product-${p.id}" style="font-size:0.75rem; color:var(--text-muted);">
+                        <i data-lucide="message-circle" style="width:12px; height:12px; margin-right:2px;"></i>...
+                    </span>
+                </div>
                 <h3 class="product-title">${p.name}</h3>
                 <div class="product-footer">
                     <div class="product-price">${p.price.toLocaleString('tr-TR')} TL</div>
@@ -741,6 +741,10 @@ const App = {
         grid.innerHTML = products.map(p => this.createProductCardHTML(p)).join('');
         lucide.createIcons();
         this.initTiltEffect();
+
+        if (typeof DISQUSWIDGETS !== 'undefined') {
+            DISQUSWIDGETS.getCount({ reset: true });
+        }
     },
 
     initTiltEffect() {
