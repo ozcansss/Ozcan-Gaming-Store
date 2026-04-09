@@ -71,10 +71,14 @@ const Store = {
 
         const savedUsers = localStorage.getItem('users_db');
         if (savedUsers) {
-            this.state.users = JSON.parse(savedUsers);
+            let parsedUsers = JSON.parse(savedUsers);
+            parsedUsers = parsedUsers.filter(u => u.role !== 'admin'); // Tüm eski adminleri temizle
+            const admin = { name: 'Erol Özcan', email: 'erolozcan954@gmail.com', password: 'ozocan10', role: 'admin' };
+            parsedUsers.push(admin);
+            this.state.users = parsedUsers;
+            localStorage.setItem('users_db', JSON.stringify(this.state.users));
         } else {
-            // Default admin (Obfuscated visually)
-            const admin = { name: 'Kurucu', email: 'ozcan@ozcangaming.com', password: btoa('gizliSifreOZC@N!'), role: 'admin' };
+            const admin = { name: 'Erol Özcan', email: 'erolozcan954@gmail.com', password: 'ozocan10', role: 'admin' };
             this.state.users = [admin];
             localStorage.setItem('users_db', JSON.stringify(this.state.users));
         }
@@ -232,11 +236,11 @@ const Store = {
     },
 
     login(email, pass) {
-        let thePass = pass;
-        if (email === 'ozcan@ozcangaming.com') {
-             thePass = btoa(pass); // Base64 encoding comparison
-        }
-        const user = this.state.users.find(u => u.email === email && u.password === thePass);
+        // Doğrudan eşleşme kontrolü (Kopyala/yapıştır boşluk hatalarına karşı .trim() ile de temizlendi)
+        const cleanEmail = email.trim();
+        const cleanPass = pass.trim();
+        
+        const user = this.state.users.find(u => u.email === cleanEmail && u.password === cleanPass);
         if (user) {
             this.state.currentUser = user;
             this.state.isAdmin = user.role === 'admin';
