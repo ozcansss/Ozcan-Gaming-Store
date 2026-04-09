@@ -1655,7 +1655,7 @@ const App = {
     },
 
     guessFPS(product) {
-        if (!['gpu', 'cpu', 'laptop', 'oem'].includes(product.category)) return '';
+        if (!['laptop', 'oem'].includes(product.category)) return '';
         
         let csgo = 200, cyber = 60, valo = 250;
         
