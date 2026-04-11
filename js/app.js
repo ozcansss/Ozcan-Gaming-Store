@@ -720,24 +720,6 @@ const App = {
                         </div>
                         <div class="sidebar-content">
                             <div class="filter-group">
-                                <h4>Kategoriler</h4>
-                                <ul id="sidebar-categories" class="sidebar-category-list">
-                                    <li onclick="Store.setCategory('all'); App.handleRouting();" class="${Store.state.currentCategory === 'all' ? 'active' : ''}">Tüm Ürünler</li>
-                                    <li onclick="Store.setCategory('gpu'); App.handleRouting();" class="${Store.state.currentCategory === 'gpu' ? 'active' : ''}">Ekran Kartı</li>
-                                    <li onclick="Store.setCategory('cpu'); App.handleRouting();" class="${Store.state.currentCategory === 'cpu' ? 'active' : ''}">İşlemci</li>
-                                    <li onclick="Store.setCategory('mainboard'); App.handleRouting();" class="${Store.state.currentCategory === 'mainboard' ? 'active' : ''}">Anakart</li>
-                                    <li onclick="Store.setCategory('ram'); App.handleRouting();" class="${Store.state.currentCategory === 'ram' ? 'active' : ''}">Bellek (RAM)</li>
-                                    <li onclick="Store.setCategory('case'); App.handleRouting();" class="${Store.state.currentCategory === 'case' ? 'active' : ''}">Kasa</li>
-                                    <li onclick="Store.setCategory('storage'); App.handleRouting();" class="${Store.state.currentCategory === 'storage' ? 'active' : ''}">Depolama</li>
-                                    <li onclick="Store.setCategory('cooling'); App.handleRouting();" class="${Store.state.currentCategory === 'cooling' ? 'active' : ''}">Soğutma & Fan</li>
-                                    <li onclick="Store.setCategory('psu'); App.handleRouting();" class="${Store.state.currentCategory === 'psu' ? 'active' : ''}">Güç Kaynağı</li>
-                                    <li onclick="Store.setCategory('oem'); App.handleRouting();" class="${Store.state.currentCategory === 'oem' ? 'active' : ''}">Hazır Sistem</li>
-                                    <li onclick="Store.setCategory('laptop'); App.handleRouting();" class="${Store.state.currentCategory === 'laptop' ? 'active' : ''}">Laptop & Macbook</li>
-                                    <li onclick="Store.setCategory('monitor'); App.handleRouting();" class="${Store.state.currentCategory === 'monitor' ? 'active' : ''}">Monitör</li>
-                                    <li onclick="Store.setCategory('accessories'); App.handleRouting();" class="${Store.state.currentCategory === 'accessories' ? 'active' : ''}">Oyuncu Ekipmanları</li>
-                                </ul>
-                            </div>
-                            <div class="filter-group">
                                 <h4>Fiyat Aralığı</h4>
                                 <input type="number" id="filter-min" placeholder="Min TL" value="${Store.state.minPrice === 0 ? '' : Store.state.minPrice}">
                                 <input type="number" id="filter-max" placeholder="Max TL" value="${Store.state.maxPrice === Infinity ? '' : Store.state.maxPrice}">
