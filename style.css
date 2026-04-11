@@ -744,7 +744,36 @@ button {
         width: 100%;
         position: static;
         margin-bottom: 20px;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+
+    .filter-header-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: var(--bg-accent);
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .sidebar-content {
+        display: none;
+        background: var(--bg-secondary);
         padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+
+    .sidebar-content.active {
+        display: block;
+        animation: fadeInUp 0.3s ease;
     }
 
     .admin-grid {
@@ -1458,7 +1487,14 @@ body.light-theme {
     flex: 1;
 }
 
-/* Sidebar Categories */
+/* Sidebar Categories & Mobile Filters */
+.filter-header-mobile {
+    display: none;
+}
+.sidebar-content {
+    display: block;
+}
+
 .sidebar-category-list {
     list-style: none;
     padding: 0;
