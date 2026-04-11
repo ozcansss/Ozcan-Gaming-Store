@@ -619,6 +619,13 @@ button {
 }
 
 
+/* Mobile Responsive Advantages */
+@media (max-width: 768px) {
+    .advantages-section .container {
+        display: none; /* Mobilde yerden tasarruf için gizlendi */
+    }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .navbar .container {
@@ -710,7 +717,16 @@ button {
     }
 
     .banner-content h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .hero-banner {
+        padding: 40px 20px;
+    }
+
+    .advantages-section .container {
+        display: none;
     }
     
     .banner-content p {

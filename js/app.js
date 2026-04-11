@@ -709,8 +709,8 @@ const App = {
 
     renderStorePage(container) {
         container.innerHTML = `
-            <div class="container" style="padding-top: 2rem;">
-                <div class="section-header">
+            <div class="container" style="padding-top: 1rem;">
+                <div class="section-header" style="margin-bottom: 1rem;">
                     <h2>${App.categoryNames[Store.state.currentCategory] || Store.state.currentCategory.toUpperCase()}</h2>
                 </div>
                 <div class="store-layout">
