@@ -665,6 +665,8 @@ button {
 
     .product-detail-grid {
         grid-template-columns: 1fr !important;
+        padding: 10px;
+        gap: 20px;
     }
 
     .product-detail-grid .detail-gallery {
@@ -683,6 +685,7 @@ button {
         width: 100%;
         position: static;
         margin-bottom: 20px;
+        padding: 15px;
     }
 
     .admin-grid {
@@ -707,6 +710,15 @@ button {
         flex-direction: column;
         gap: 1rem;
     }
+    
+    .product-grid {
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+
+    .product-card {
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -720,6 +732,24 @@ button {
     
     .nav-icon-btn {
         font-size: 0.65rem;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+    }
+    
+    .whatsapp-btn {
+        width: 50px !important;
+        height: 50px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+    
+    #scroll-to-top {
+        bottom: 80px; /* WhatsApp butonunun üstünde durması için */
+        right: 20px;
+        width: 40px;
+        height: 40px;
     }
 }
 
