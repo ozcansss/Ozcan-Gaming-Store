@@ -640,12 +640,40 @@ button {
         order: 3;
     }
     
+    .categories-nav {
+        background-color: var(--bg-secondary);
+        padding: 5px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
     .categories-nav ul {
-        gap: 1rem;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 8px;
+        padding: 5px 10px;
+    }
+    
+    .categories-nav ul::-webkit-scrollbar {
+        display: none;
     }
     
     .categories-nav li a {
         font-size: 0.75rem;
+        background: var(--input-bg);
+        padding: 8px 16px;
+        border-radius: 20px;
+        white-space: nowrap;
+        display: inline-block;
+        border: 1px solid var(--border-color);
+    }
+
+    .categories-nav li a.active {
+        background: var(--bg-accent);
+        color: white;
+        border-color: var(--bg-accent);
     }
 
     .banner-content h2 {
