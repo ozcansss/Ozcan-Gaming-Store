@@ -161,12 +161,10 @@ button {
 
 .categories-nav ul {
     display: flex;
+    justify-content: center;
     gap: 2rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    padding-bottom: 5px; /* Küçük bir boşluk */
+    flex-wrap: wrap;
+    padding: 0 1rem;
 }
 
 .categories-nav ul::-webkit-scrollbar {
@@ -746,8 +744,8 @@ button {
     }
     
     #scroll-to-top {
-        bottom: 80px; /* WhatsApp butonunun üstünde durması için */
-        right: 20px;
+        bottom: 85px; /* WhatsApp butonunun hemen üstünde ortalı */
+        right: 25px;
         width: 40px;
         height: 40px;
     }
@@ -940,8 +938,8 @@ button {
 /* Scroll to Top */
 #scroll-to-top {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 110px;
+    right: 35px;
     background: var(--bg-accent);
     color: white;
     width: 50px;
@@ -967,6 +965,30 @@ button {
 
 #scroll-to-top:hover {
     background: var(--bg-accent-hover);
+    transform: scale(1.1);
+}
+
+/* WhatsApp Button */
+.whatsapp-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #25D366;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(37,211,102,0.4);
+    z-index: 999;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.whatsapp-btn:hover {
     transform: scale(1.1);
 }
 
@@ -1373,6 +1395,35 @@ body.light-theme {
 
 .store-main {
     flex: 1;
+}
+
+/* Sidebar Categories */
+.sidebar-category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-category-list li {
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-secondary);
+    background: var(--input-bg);
+    font-size: 0.9rem;
+}
+
+.sidebar-category-list li:hover {
+    background: rgba(227, 30, 36, 0.2);
+    color: var(--bg-accent);
+}
+
+.sidebar-category-list li.active {
+    background: var(--bg-accent);
+    color: white;
+    font-weight: bold;
 }
 
 /* Compare Bar */
