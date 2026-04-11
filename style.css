@@ -639,35 +639,33 @@ button {
         width: 100%;
         order: 3;
     }
-    
+
     .categories-nav {
         background-color: var(--bg-secondary);
-        padding: 5px 0;
+        padding: 10px;
         border-bottom: 1px solid var(--border-color);
     }
 
     .categories-nav ul {
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
-        padding: 5px 10px;
-    }
-    
-    .categories-nav ul::-webkit-scrollbar {
-        display: none;
+        padding: 0;
+        overflow-x: hidden;
     }
     
     .categories-nav li a {
         font-size: 0.75rem;
         background: var(--input-bg);
-        padding: 8px 16px;
-        border-radius: 20px;
-        white-space: nowrap;
-        display: inline-block;
+        padding: 10px 5px;
+        border-radius: 8px;
+        white-space: normal;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
         border: 1px solid var(--border-color);
+        height: 100%;
     }
 
     .categories-nav li a.active {
