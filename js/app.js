@@ -44,9 +44,9 @@ const App = {
                 if (href && href.startsWith('#') && href !== '#shop') {
                     // Eğer link doğrudan bir hash rotasyona sahipse (örn: #builder) ona izin ver.
                     if (category) {
-                         // İstisna varsa
+                        // İstisna varsa
                     } else {
-                         return; // default davranışı engelleme (ki href çalışsın)
+                        return; // default davranışı engelleme (ki href çalışsın)
                     }
                 }
 
@@ -75,8 +75,8 @@ const App = {
                 return;
             }
 
-            const matches = Store.state.products.filter(p => 
-                p.name.toLowerCase().includes(query) || 
+            const matches = Store.state.products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
                 p.brand.toLowerCase().includes(query)
             ).slice(0, 6);
 
@@ -134,7 +134,7 @@ const App = {
         // Scroll Progress & Scroll To Top
         const scrollBtn = document.getElementById('scroll-to-top');
         const progressBar = document.getElementById('scroll-progress');
-        
+
         window.addEventListener('scroll', () => {
             // Progress Bar
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -199,7 +199,7 @@ const App = {
     handleRouting() {
         const hash = window.location.hash;
         const main = document.getElementById('main-content');
-        
+
         // Page Loading Bar Animation
         const loader = document.getElementById('top-loader');
         if (loader) {
@@ -287,12 +287,12 @@ const App = {
 
         // Stock status
         const isLimited = productId % 7 === 0;
-        const stockHTML = isLimited 
+        const stockHTML = isLimited
             ? '<span class="stock-status stock-low"><i data-lucide="alert-triangle"></i> Son 3 Ürün!</span>'
             : '<span class="stock-status stock-in"><i data-lucide="check"></i> Stokta Var</span>';
 
         const images = product.images || [product.image];
-        
+
         container.innerHTML = `
             <div class="container" style="padding: 2rem 1rem;">
                 <div class="breadcrumbs">
@@ -404,13 +404,13 @@ const App = {
     goToSlide(index) {
         if (index < 0) index = this.totalSlides - 1;
         if (index >= this.totalSlides) index = 0;
-        
+
         this.currentSlide = index;
         const wrapper = document.querySelector('.slider-wrapper');
         if (wrapper) {
             wrapper.style.transform = `translateX(-${index * 100}%)`;
         }
-        
+
         // Update dots
         const dots = document.querySelectorAll('.dot');
         dots.forEach((dot, i) => {
@@ -471,7 +471,7 @@ const App = {
         container.innerHTML = `
             <div class="container" style="padding: 3rem 0;">
                 <div class="section-header"><h2>Siparişlerim ve Kargo Takip</h2></div>
-                ${myOrders.length === 0 ? '<p class="text-center text-muted" style="padding:40px;">Henüz aktif bir siparişiniz bulunmuyor.</p>' : 
+                ${myOrders.length === 0 ? '<p class="text-center text-muted" style="padding:40px;">Henüz aktif bir siparişiniz bulunmuyor.</p>' :
                 myOrders.reverse().map(o => `
                     <div style="background:var(--bg-secondary); padding:2rem; border-radius:12px; margin-bottom:20px; border:1px solid var(--border-color);">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:15px; margin-bottom:20px;">
@@ -681,7 +681,7 @@ const App = {
         const update = () => {
             const now = new Date();
             const diff = target - now;
-            
+
             const hours = Math.floor(diff / 3600000);
             const mins = Math.floor((diff % 3600000) / 60000);
             const secs = Math.floor((diff % 60000) / 1000);
@@ -763,7 +763,7 @@ const App = {
 
     createProductCardHTML(p) {
         const displayImage = (p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/300x300/161616/e31e24?text=Resim+Yok');
-        
+
         // Rozet Belirleme
         let badge = '';
         if ([1, 11, 19, 49, 31, 27].includes(p.id)) badge = '<span class="badge-new">YENİ</span>';
@@ -904,11 +904,11 @@ const App = {
         let total = Store.state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         if (Store.state.discountRate > 0) {
             total = total * (1 - Store.state.discountRate);
-            cartTotalDisplay.parentElement.innerHTML = `<span>Toplam (<span style="color:var(--bg-accent)">%${Store.state.discountRate*100} İndirim</span>):</span> <span id="cart-total">${total.toLocaleString('tr-TR')} TL</span>`;
+            cartTotalDisplay.parentElement.innerHTML = `<span>Toplam (<span style="color:var(--bg-accent)">%${Store.state.discountRate * 100} İndirim</span>):</span> <span id="cart-total">${total.toLocaleString('tr-TR')} TL</span>`;
         } else {
             cartTotalDisplay.parentElement.innerHTML = `<span>Toplam:</span> <span id="cart-total">${total.toLocaleString('tr-TR')} TL</span>`;
         }
-        
+
         const totalStr = total.toLocaleString('tr-TR') + ' TL';
         if (navCartTotal) navCartTotal.innerText = totalStr;
 
@@ -931,9 +931,9 @@ const App = {
     updateBadges() {
         const cartBadge = document.getElementById('cart-badge');
         const wishlistBadge = document.getElementById('wishlist-badge');
-        
+
         const cartCount = Store.state.cart.reduce((s, i) => s + i.quantity, 0);
-        
+
         // Pop animation if cart changed
         if (cartBadge.innerText !== cartCount.toString() && cartCount > 0) {
             cartBadge.classList.remove('cart-pop-animation');
@@ -1042,7 +1042,7 @@ const App = {
             const name = document.getElementById('reg-name').value;
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
-            
+
             const res = Store.register(name, email, pass);
             if (res.success) {
                 this.showToast('Hesabınız başarıyla oluşturuldu!', 'user-plus');
@@ -1133,18 +1133,19 @@ const App = {
 
     renderAdminProductList() {
         const listContainer = document.getElementById('admin-product-list');
-        if(!listContainer) return;
+        if (!listContainer) return;
 
         listContainer.innerHTML = Store.state.products.map(p => `
             <div class="admin-product-item" style="background:var(--bg-elevation); padding:10px 15px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
                 <div class="info" style="display:flex; align-items:center; gap:15px;">
-                    <img src="${(p.images&&p.images[0])?p.images[0]:p.image}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/40x40/161616/e31e24'">
+                    <img src="${(p.images && p.images[0]) ? p.images[0] : p.image}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/40x40/161616/e31e24'">
                     <div>
                         <strong style="display:block; color:var(--text-primary); font-size:0.9rem;">${p.name}</strong>
-                        <span style="font-size:0.8rem; color:var(--text-muted);">${p.brand} | ${App.categoryNames[p.category]||p.category} | ${p.price.toLocaleString('tr-TR')} ₺</span>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">${p.brand} | ${App.categoryNames[p.category] || p.category} | ${p.price.toLocaleString('tr-TR')} ₺</span>
                     </div>
                 </div>
                 <div class="actions">
+                    <button class="text-blue" onclick="App.updatePrice(${p.id})" style="background:transparent; border:1px solid #3b82f6; padding:5px 10px; border-radius:4px; cursor:pointer; color:#3b82f6; font-size:0.8rem; margin-right:5px;"><i data-lucide="edit" style="width:14px; margin-bottom:-2px;"></i> Fiyat</button>
                     <button class="text-red" onclick="App.deleteProduct(${p.id})" style="background:transparent; border:1px solid var(--text-red); padding:5px 10px; border-radius:4px; cursor:pointer; color:var(--text-red); font-size:0.8rem;"><i data-lucide="trash-2" style="width:14px; margin-bottom:-2px;"></i> Sil</button>
                 </div>
             </div>
@@ -1159,40 +1160,55 @@ const App = {
         }
     },
 
+    updatePrice(id) {
+        const product = Store.state.products.find(p => p.id === id);
+        if (!product) return;
+
+        const newPrice = prompt(\`"\${product.name}" için yeni fiyatı girin (Mevcut: \${product.price} TL):\`, product.price);
+        
+        if (newPrice !== null && !isNaN(newPrice) && newPrice.trim() !== '') {
+            Store.updateProductPrice(id, newPrice);
+            this.renderAdminProductList();
+            this.showToast('Fiyat başarıyla güncellendi!', 'check');
+        } else if (newPrice !== null) {
+            this.showToast('Lütfen geçerli bir sayı girin.', 'alert-circle');
+        }
+    },
+
     renderAddProductForm(container) {
         container.innerHTML = `
-            <div class="container small-container">
-                <div class="auth-card">
-                    <h2>Yeni Ürün Ekle</h2>
-                    <form id="add-product-form">
-                        <div class="form-group">
-                            <label>Ürün Adı</label>
-                            <input type="text" id="p-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Marka</label>
-                            <input type="text" id="p-brand" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Kategori</label>
-                            <select id="p-cat">
-                                <option value="gpu">Ekran Kartı</option>
-                                <option value="cpu">İşlemci</option>
-                                <option value="ram">RAM</option>
-                                <option value="laptop">Laptop</option>
-                                <option value="case">Kasa</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Fiyat (TL)</label>
-                            <input type="number" id="p-price" required>
-                        </div>
-                        <button type="submit" class="btn-primary full-width">Kaydet</button>
-                        <button type="button" onclick="window.location.hash='admin'" class="btn-outline full-width mt-1">İptal</button>
-                    </form>
-                </div>
+            < div class= "container small-container" >
+            <div class="auth-card">
+                <h2>Yeni Ürün Ekle</h2>
+                <form id="add-product-form">
+                    <div class="form-group">
+                        <label>Ürün Adı</label>
+                        <input type="text" id="p-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Marka</label>
+                        <input type="text" id="p-brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="p-cat">
+                            <option value="gpu">Ekran Kartı</option>
+                            <option value="cpu">İşlemci</option>
+                            <option value="ram">RAM</option>
+                            <option value="laptop">Laptop</option>
+                            <option value="case">Kasa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fiyat (TL)</label>
+                        <input type="number" id="p-price" required>
+                    </div>
+                    <button type="submit" class="btn-primary full-width">Kaydet</button>
+                    <button type="button" onclick="window.location.hash='admin'" class="btn-outline full-width mt-1">İptal</button>
+                </form>
             </div>
-        `;
+            </div >
+    `;
 
         document.getElementById('add-product-form').onsubmit = (e) => {
             e.preventDefault();
@@ -1217,13 +1233,13 @@ const App = {
 
         if (Store.state.cart.length === 0) {
             container.innerHTML = `
-                <div class="container text-center" style="padding: 5rem 0;">
+    < div class="container text-center" style = "padding: 5rem 0;" >
                     <i data-lucide="shopping-cart" style="width: 64px; height: 64px; margin-bottom: 1rem; color: var(--text-muted);"></i>
                     <h2>Sepetiniz Boş</h2>
                     <p class="mb-2">Sipariş verebilmek için önce sepetinize ürün eklemelisiniz.</p>
                     <a href="#shop" class="btn-primary">Alışverişe Başla</a>
-                </div>
-            `;
+                </div >
+    `;
             lucide.createIcons();
             return;
         }
@@ -1231,47 +1247,47 @@ const App = {
         const total = Store.state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
         container.innerHTML = `
-            <div class="container" style="padding: 3rem 0;">
-                <div class="checkout-grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
-                    <div class="checkout-form">
-                        <div class="auth-card" style="text-align: left; max-width: 100%;">
-                            <h2 class="mb-2">Teslimat & Ödeme</h2>
-                            <form id="checkout-form">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <div class="form-group">
-                                        <label>Ad</label>
-                                        <input type="text" required id="c-name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Soyad</label>
-                                        <input type="text" required id="c-surname">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>E-posta</label>
-                                    <input type="email" required id="c-email" value="${Store.state.currentUser ? Store.state.currentUser.email : ''}">
-                                </div>
-                                <div class="form-group">
-                                    <label>Adres</label>
-                                    <textarea required id="c-address" style="width: 100%; min-height: 100px; background: var(--input-bg); color: white; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px;"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ödeme Yöntemi</label>
-                                    <select id="c-payment" style="width: 100%; background: var(--input-bg); color: white; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px;">
-                                        <option value="cc">Kredi Kartı</option>
-                                        <option value="transfer">Banka Havalesi / EFT</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn-primary full-width mt-1" style="padding: 1.2rem;">SİPARİŞİ ONAYLA</button>
-                            </form>
+    < div class="container" style = "padding: 3rem 0;" >
+        <div class="checkout-grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
+            <div class="checkout-form">
+                <div class="auth-card" style="text-align: left; max-width: 100%;">
+                    <h2 class="mb-2">Teslimat & Ödeme</h2>
+                    <form id="checkout-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label>Ad</label>
+                                <input type="text" required id="c-name">
+                            </div>
+                            <div class="form-group">
+                                <label>Soyad</label>
+                                <input type="text" required id="c-surname">
+                            </div>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label>E-posta</label>
+                            <input type="email" required id="c-email" value="${Store.state.currentUser ? Store.state.currentUser.email : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Adres</label>
+                            <textarea required id="c-address" style="width: 100%; min-height: 100px; background: var(--input-bg); color: white; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Ödeme Yöntemi</label>
+                            <select id="c-payment" style="width: 100%; background: var(--input-bg); color: white; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px;">
+                                <option value="cc">Kredi Kartı</option>
+                                <option value="transfer">Banka Havalesi / EFT</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary full-width mt-1" style="padding: 1.2rem;">SİPARİŞİ ONAYLA</button>
+                    </form>
+                </div>
+            </div>
 
-                    <div class="checkout-summary">
-                        <div class="auth-card" style="text-align: left; max-width: 100%;">
-                            <h3 class="mb-2">Sipariş Özeti</h3>
-                            <div class="cart-items-preview" style="max-height: 400px; overflow-y: auto;">
-                                ${Store.state.cart.map(item => `
+            <div class="checkout-summary">
+                <div class="auth-card" style="text-align: left; max-width: 100%;">
+                    <h3 class="mb-2">Sipariş Özeti</h3>
+                    <div class="cart-items-preview" style="max-height: 400px; overflow-y: auto;">
+                        ${Store.state.cart.map(item => `
                                     <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                                         <img src="${(item.images && item.images[0]) ? item.images[0] : item.image}" style="width: 50px; height: 50px; border-radius: 4px; object-fit: cover;">
                                         <div style="flex: 1;">
@@ -1280,16 +1296,16 @@ const App = {
                                         </div>
                                     </div>
                                 `).join('')}
-                            </div>
-                            <div style="margin-top: 1rem; border-top: 2px solid var(--bg-accent); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                                <strong>TOPLAM TUTAR:</strong>
-                                <span style="font-size: 1.4rem; color: var(--bg-accent); font-weight: 800;">${total.toLocaleString('tr-TR')} TL</span>
-                            </div>
-                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; border-top: 2px solid var(--bg-accent); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <strong>TOPLAM TUTAR:</strong>
+                        <span style="font-size: 1.4rem; color: var(--bg-accent); font-weight: 800;">${total.toLocaleString('tr-TR')} TL</span>
                     </div>
                 </div>
             </div>
-        `;
+        </div>
+            </div >
+    `;
 
         document.getElementById('checkout-form').onsubmit = (e) => {
             e.preventDefault();
@@ -1308,7 +1324,7 @@ const App = {
         Store.clearCart();
         
         container.innerHTML = `
-            <div class="container text-center" style="padding: 5rem 0;">
+    < div class="container text-center" style = "padding: 5rem 0;" >
                 <div class="success-icon" style="background: var(--bg-accent); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
                     <i data-lucide="check" style="width: 48px; height: 48px; color: white;"></i>
                 </div>
@@ -1322,8 +1338,8 @@ const App = {
                     <a href="#orders" class="btn-outline" style="padding: 1rem 2rem;">Siparişimi Takip Et</a>
                     <a href="#shop" class="btn-primary" style="padding: 1rem 2rem;">Alışverişe Devam Et</a>
                 </div>
-            </div>
-        `;
+            </div >
+    `;
         lucide.createIcons();
         window.scrollTo(0, 0);
     },
@@ -1337,9 +1353,10 @@ const App = {
         const myOrders = Store.state.orders.filter(o => o.userEmail === Store.state.currentUser.email);
 
         container.innerHTML = `
-            <div class="container" style="padding: 3rem 0;">
-                <div class="section-header"><h2>Siparişlerim</h2></div>
-                ${myOrders.length === 0 ? `
+    < div class="container" style = "padding: 3rem 0;" >
+        <div class="section-header"><h2>Siparişlerim</h2></div>
+                ${
+    myOrders.length === 0 ? `
                     <div class="auth-card" style="text-align:center;">
                         <p>Henüz bir siparişiniz bulunmuyor.</p>
                         <a href="#shop" class="btn-primary mt-1">Hemen Alışverişe Başla</a>
@@ -1360,9 +1377,10 @@ const App = {
                             Toplam: ${order.total.toLocaleString('tr-TR')} TL
                         </div>
                     </div>
-                `).join('')}
-            </div>
-        `;
+                `).join('')
+}
+            </div >
+    `;
         lucide.createIcons();
     },
 
@@ -1373,9 +1391,9 @@ const App = {
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.innerHTML = `
-            <i data-lucide="${icon}"></i>
-            <span>${message}</span>
-        `;
+    < i data - lucide="${icon}" ></i >
+        <span>${message}</span>
+`;
         
         container.appendChild(toast);
         lucide.createIcons();
@@ -1401,12 +1419,12 @@ const App = {
         if (compareItems.length > 0) {
             bar.classList.add('active');
             itemsContainer.innerHTML = compareItems.map(p => `
-                <div class="compare-item-mini">
-                    <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/30px')}" alt="${p.name}">
-                    <span style="font-size:0.8rem; font-weight:bold; max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</span>
-                    <button onclick="Store.removeFromCompare(${p.id}); App.renderCompareBar();" style="color:var(--text-muted);"><i data-lucide="x" style="width:14px;"></i></button>
-                </div>
-            `).join('');
+    < div class="compare-item-mini" >
+        <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/30px')}" alt="${p.name}">
+            <span style="font-size:0.8rem; font-weight:bold; max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</span>
+            <button onclick="Store.removeFromCompare(${p.id}); App.renderCompareBar();" style="color:var(--text-muted);"><i data-lucide="x" style="width:14px;"></i></button>
+        </div>
+`).join('');
         } else {
             bar.classList.remove('active');
         }
@@ -1417,17 +1435,17 @@ const App = {
         const items = Store.state.compare;
         if (items.length === 0) {
             container.innerHTML = `
-                <div class="container text-center" style="padding: 5rem 0;">
+    < div class="container text-center" style = "padding: 5rem 0;" >
                     <h2>Karşılaştırma Listesi Boş</h2>
                     <p class="text-muted mb-2">Karşılaştırmak istediğiniz ürünleri ürün kartlarındaki karşılaştırma butonuna tıklayarak ekleyebilirsiniz.</p>
                     <a href="#shop" class="btn-primary" style="display:inline-flex;">Ürünlere Göz At</a>
-                </div>
-            `;
+                </div >
+    `;
             return;
         }
 
         container.innerHTML = `
-            <div class="container" style="padding: 3rem 0;">
+    < div class="container" style = "padding: 3rem 0;" >
                 <div class="section-header">
                     <h2>Ürün Karşılaştırma</h2>
                 </div>
@@ -1474,8 +1492,8 @@ const App = {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        `;
+            </div >
+    `;
         lucide.createIcons();
     },
 
@@ -1500,7 +1518,7 @@ const App = {
         const allCompleted = Object.values(state).every(item => item !== null);
 
         let html = `
-            <div class="container" style="padding: 3rem 0;">
+    < div class="container" style = "padding: 3rem 0;" >
                 <div class="section-header text-center" style="border:none;">
                     <h2>PC Toplama Sihirbazı <i data-lucide="cpu" style="width:30px;height:30px;color:var(--bg-accent);"></i></h2>
                     <p class="text-muted">Hayalinizdeki sistemi adım adım toplayın.</p>
@@ -1582,8 +1600,8 @@ const App = {
                         </button>
                     </aside>
                 </div>
-            </div>
-        `;
+            </div >
+    `;
 
         container.innerHTML = html;
         lucide.createIcons();
@@ -1674,7 +1692,7 @@ const App = {
         const calcWidth = (val, max) => Math.min(100, Math.max(10, (val / max) * 100));
 
         return `
-            <div style="margin:2rem 0; padding:2rem; background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border-color);">
+    < div style = "margin:2rem 0; padding:2rem; background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border-color);" >
                 <h2 style="color:var(--bg-accent); margin-bottom:20px; display:flex; align-items:center; gap:10px;"><i data-lucide="crosshair"></i> Oyun Performans Analizi (Tahmini)</h2>
                 
                 <div style="margin-bottom:15px;">
@@ -1697,8 +1715,8 @@ const App = {
                         <div style="height:100%; width:${calcWidth(cyber, 150)}%; background:var(--text-red); border-radius:6px; transition:width 1.5s;"></div>
                     </div>
                 </div>
-            </div>
-        `;
+            </div >
+    `;
     },
 
     showCrossSell(product) {
@@ -1718,7 +1736,7 @@ const App = {
         if(!modal || !content) return;
 
         content.innerHTML = `
-            <button onclick="document.getElementById('cross-sell-modal').style.display='none'" style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;"><i data-lucide="x"></i></button>
+    < button onclick = "document.getElementById('cross-sell-modal').style.display='none'" style = "position:absolute; top:10px; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;" > <i data-lucide="x"></i></button >
             <h3 style="color:#10b981; margin-bottom:15px;">Bunu Alanlar Bunu da Aldı!</h3>
             <img src="${(randomProduct.images && randomProduct.images[0]) ? randomProduct.images[0] : (randomProduct.image || 'https://via.placeholder.com/150')}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; margin-bottom:15px;">
             <h4 style="margin-bottom:5px;">${randomProduct.name}</h4>
@@ -1726,7 +1744,7 @@ const App = {
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Aldığınız bu ürünün tam performans göstermesi için sistemimiz size bu tamamlayıcıyı öneriyor.</p>
             <button class="btn-primary full-width" onclick="Store.addToCart(${JSON.stringify(randomProduct).replace(/"/g, '&quot;')}); document.getElementById('cross-sell-modal').style.display='none';">BUNU DA SEPETE EKLE</button>
             <button class="btn-outline full-width mt-1" onclick="document.getElementById('cross-sell-modal').style.display='none'">İstemiyorum, Teşekkürler</button>
-        `;
+`;
         
         modal.style.display = 'flex';
         lucide.createIcons();

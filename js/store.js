@@ -228,6 +228,15 @@ const Store = {
         this.applyFilters();
     },
 
+    updateProductPrice(id, newPrice) {
+        const product = this.state.products.find(p => p.id === id);
+        if (product) {
+            product.price = parseFloat(newPrice);
+            this.saveProducts();
+            this.applyFilters();
+        }
+    },
+
     // Auth Actions
     register(name, email, password) {
         const exists = this.state.users.find(u => u.email === email);

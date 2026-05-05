@@ -36,14 +36,14 @@ const extraFeatures = {
 products.forEach(p => {
     // Basic fix for features
     if (!p.features) p.features = [];
-    
+
     // Add class extra features safely
     const extras = extraFeatures[p.category] || [];
-    
+
     // Pick 3 random or top 3 extra features to add so it doesn't get ridiculously long
     // actually, let's just add 4 of them
     const newExtras = extras.slice(0, 4);
-    
+
     newExtras.forEach(f => {
         if (!p.features.includes(f)) {
             p.features.push(f);
@@ -53,10 +53,10 @@ products.forEach(p => {
     // Special fix for OEM based on recent user changes
     if (p.id === 65) {
         p.features = [
-            "Intel Core i5 12400F İşlemci", 
-            "GeForce RTX 5060 Ekran Kartı", 
-            "16GB (2x8) DDR4 RAM", 
-            "500GB M.2 Nvme SSD", 
+            "Intel Core i5 12400F İşlemci",
+            "GeForce RTX 5060 Ekran Kartı",
+            "16GB (2x8) DDR4 RAM",
+            "500GB M.2 Nvme SSD",
             "H610M Anakart",
             ...extras
         ];
