@@ -1164,8 +1164,8 @@ const App = {
         const product = Store.state.products.find(p => p.id === id);
         if (!product) return;
 
-        const newPrice = prompt(\`"\${product.name}" için yeni fiyatı girin (Mevcut: \${product.price} TL):\`, product.price);
-        
+        const newPrice = prompt(`"${product.name}" için yeni fiyatı girin (Mevcut: ${product.price} TL):`, product.price);
+
         if (newPrice !== null && !isNaN(newPrice) && newPrice.trim() !== '') {
             Store.updateProductPrice(id, newPrice);
             this.renderAdminProductList();
@@ -1177,36 +1177,36 @@ const App = {
 
     renderAddProductForm(container) {
         container.innerHTML = `
-            < div class= "container small-container" >
-            <div class="auth-card">
-                <h2>Yeni Ürün Ekle</h2>
-                <form id="add-product-form">
-                    <div class="form-group">
-                        <label>Ürün Adı</label>
-                        <input type="text" id="p-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Marka</label>
-                        <input type="text" id="p-brand" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Kategori</label>
-                        <select id="p-cat">
-                            <option value="gpu">Ekran Kartı</option>
-                            <option value="cpu">İşlemci</option>
-                            <option value="ram">RAM</option>
-                            <option value="laptop">Laptop</option>
-                            <option value="case">Kasa</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Fiyat (TL)</label>
-                        <input type="number" id="p-price" required>
-                    </div>
-                    <button type="submit" class="btn-primary full-width">Kaydet</button>
-                    <button type="button" onclick="window.location.hash='admin'" class="btn-outline full-width mt-1">İptal</button>
-                </form>
-            </div>
+            <div class="container small-container">
+                <div class="auth-card">
+                    <h2>Yeni Ürün Ekle</h2>
+                    <form id="add-product-form">
+                        <div class="form-group">
+                            <label>Ürün Adı</label>
+                            <input type="text" id="p-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Marka</label>
+                            <input type="text" id="p-brand" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select id="p-cat">
+                                <option value="gpu">Ekran Kartı</option>
+                                <option value="cpu">İşlemci</option>
+                                <option value="ram">RAM</option>
+                                <option value="laptop">Laptop</option>
+                                <option value="case">Kasa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fiyat (TL)</label>
+                            <input type="number" id="p-price" required>
+                        </div>
+                        <button type="submit" class="btn-primary full-width">Kaydet</button>
+                        <button type="button" onclick="window.location.hash='admin'" class="btn-outline full-width mt-1">İptal</button>
+                    </form>
+                </div>
             </div >
     `;
 
@@ -1233,7 +1233,7 @@ const App = {
 
         if (Store.state.cart.length === 0) {
             container.innerHTML = `
-    < div class="container text-center" style = "padding: 5rem 0;" >
+    <div class="container text-center" style="padding: 5rem 0;">
                     <i data-lucide="shopping-cart" style="width: 64px; height: 64px; margin-bottom: 1rem; color: var(--text-muted);"></i>
                     <h2>Sepetiniz Boş</h2>
                     <p class="mb-2">Sipariş verebilmek için önce sepetinize ürün eklemelisiniz.</p>
@@ -1247,7 +1247,7 @@ const App = {
         const total = Store.state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
         container.innerHTML = `
-    < div class="container" style = "padding: 3rem 0;" >
+    <div class="container" style="padding: 3rem 0;">
         <div class="checkout-grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
             <div class="checkout-form">
                 <div class="auth-card" style="text-align: left; max-width: 100%;">
@@ -1322,9 +1322,9 @@ const App = {
         });
 
         Store.clearCart();
-        
+
         container.innerHTML = `
-    < div class="container text-center" style = "padding: 5rem 0;" >
+    <div class="container text-center" style="padding: 5rem 0;">
                 <div class="success-icon" style="background: var(--bg-accent); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
                     <i data-lucide="check" style="width: 48px; height: 48px; color: white;"></i>
                 </div>
@@ -1344,46 +1344,6 @@ const App = {
         window.scrollTo(0, 0);
     },
 
-    renderOrdersPage(container) {
-        if (!Store.state.currentUser) {
-            window.location.hash = 'login';
-            return;
-        }
-
-        const myOrders = Store.state.orders.filter(o => o.userEmail === Store.state.currentUser.email);
-
-        container.innerHTML = `
-    < div class="container" style = "padding: 3rem 0;" >
-        <div class="section-header"><h2>Siparişlerim</h2></div>
-                ${
-    myOrders.length === 0 ? `
-                    <div class="auth-card" style="text-align:center;">
-                        <p>Henüz bir siparişiniz bulunmuyor.</p>
-                        <a href="#shop" class="btn-primary mt-1">Hemen Alışverişe Başla</a>
-                    </div>
-                ` : myOrders.reverse().map(order => `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div>
-                                <strong>Sipariş No: ${order.id}</strong>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">${order.date}</div>
-                            </div>
-                            <span class="order-badge">Hazırlanıyor</span>
-                        </div>
-                        <div class="order-body">
-                            ${order.items.map(item => `<div style="font-size:0.9rem; margin-bottom:4px;">• ${item.name} x ${item.quantity}</div>`).join('')}
-                        </div>
-                        <div style="margin-top:1rem; text-align:right; font-weight:700; color:var(--bg-accent);">
-                            Toplam: ${order.total.toLocaleString('tr-TR')} TL
-                        </div>
-                    </div>
-                `).join('')
-}
-            </div >
-    `;
-        lucide.createIcons();
-    },
-
     showToast(message, icon = 'check-circle') {
         const container = document.getElementById('toast-container');
         if (!container) return;
@@ -1394,7 +1354,7 @@ const App = {
     < i data - lucide="${icon}" ></i >
         <span>${message}</span>
 `;
-        
+
         container.appendChild(toast);
         lucide.createIcons();
 
@@ -1410,7 +1370,7 @@ const App = {
         const bar = document.getElementById('compare-bar');
         const itemsContainer = document.getElementById('compare-items-bar');
         const count = document.getElementById('compare-count');
-        
+
         if (!bar || !itemsContainer || !count) return;
 
         const compareItems = Store.state.compare;
@@ -1419,7 +1379,7 @@ const App = {
         if (compareItems.length > 0) {
             bar.classList.add('active');
             itemsContainer.innerHTML = compareItems.map(p => `
-    < div class="compare-item-mini" >
+    <div class="compare-item-mini">
         <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/30px')}" alt="${p.name}">
             <span style="font-size:0.8rem; font-weight:bold; max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</span>
             <button onclick="Store.removeFromCompare(${p.id}); App.renderCompareBar();" style="color:var(--text-muted);"><i data-lucide="x" style="width:14px;"></i></button>
@@ -1435,17 +1395,17 @@ const App = {
         const items = Store.state.compare;
         if (items.length === 0) {
             container.innerHTML = `
-    < div class="container text-center" style = "padding: 5rem 0;" >
+    <div class="container text-center" style="padding: 5rem 0;">
                     <h2>Karşılaştırma Listesi Boş</h2>
                     <p class="text-muted mb-2">Karşılaştırmak istediğiniz ürünleri ürün kartlarındaki karşılaştırma butonuna tıklayarak ekleyebilirsiniz.</p>
                     <a href="#shop" class="btn-primary" style="display:inline-flex;">Ürünlere Göz At</a>
-                </div >
+                </div>
     `;
             return;
         }
 
         container.innerHTML = `
-    < div class="container" style = "padding: 3rem 0;" >
+    <div class="container" style="padding: 3rem 0;">
                 <div class="section-header">
                     <h2>Ürün Karşılaştırma</h2>
                 </div>
@@ -1492,7 +1452,7 @@ const App = {
                         </tbody>
                     </table>
                 </div>
-            </div >
+            </div>
     `;
         lucide.createIcons();
     },
@@ -1518,7 +1478,7 @@ const App = {
         const allCompleted = Object.values(state).every(item => item !== null);
 
         let html = `
-    < div class="container" style = "padding: 3rem 0;" >
+    <div class="container" style="padding: 3rem 0;">
                 <div class="section-header text-center" style="border:none;">
                     <h2>PC Toplama Sihirbazı <i data-lucide="cpu" style="width:30px;height:30px;color:var(--bg-accent);"></i></h2>
                     <p class="text-muted">Hayalinizdeki sistemi adım adım toplayın.</p>
@@ -1537,8 +1497,8 @@ const App = {
                         <h3 class="mb-1">${step.name} Seçimi</h3>
                         <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
                             ${Store.state.products.filter(p => p.category === step.category).map(p => {
-                                const isSelected = state[step.id] && state[step.id].id === p.id;
-                                return `
+            const isSelected = state[step.id] && state[step.id].id === p.id;
+            return `
                                     <article class="product-card ${isSelected ? 'selected-item' : ''}" style="${isSelected ? 'border-color: #10b981; box-shadow: 0 0 15px rgba(16,185,129,0.3);' : ''}">
                                         <img src="${(p.images && p.images[0]) ? p.images[0] : (p.image || 'https://via.placeholder.com/200x200')}" class="product-image">
                                         <div class="product-brand">${p.brand}</div>
@@ -1551,7 +1511,7 @@ const App = {
                                         </div>
                                     </article>
                                 `;
-                            }).join('')}
+        }).join('')}
                         </div>
                     </div>
                     <aside class="store-sidebar">
@@ -1600,7 +1560,7 @@ const App = {
                         </button>
                     </aside>
                 </div>
-            </div >
+                </div>
     `;
 
         container.innerHTML = html;
@@ -1658,9 +1618,9 @@ const App = {
         if (product) {
             const today = new Date();
             const dateStr = today.toLocaleDateString('tr-TR');
-            
+
             if (!product.comments) product.comments = [];
-            
+
             product.comments.push({
                 user: userInp,
                 date: dateStr,
@@ -1670,7 +1630,7 @@ const App = {
 
             Store.saveProducts(); // Bu localStorage'a yazar, yenilemede kaybolmaz
             this.showToast('Yorumunuz onaylandı ve yayınlandı!', 'check-circle');
-            
+
             // Re-render
             this.renderProductDetailPage(document.getElementById('main-content'), productId);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1679,9 +1639,9 @@ const App = {
 
     guessFPS(product) {
         if (!['laptop', 'oem'].includes(product.category)) return '';
-        
+
         let csgo = 200, cyber = 60, valo = 250;
-        
+
         if (product.name.includes('4090')) { csgo = 850; cyber = 145; valo = 900; }
         else if (product.name.includes('4080')) { csgo = 650; cyber = 110; valo = 700; }
         else if (product.name.includes('4070')) { csgo = 450; cyber = 85; valo = 550; }
@@ -1692,7 +1652,7 @@ const App = {
         const calcWidth = (val, max) => Math.min(100, Math.max(10, (val / max) * 100));
 
         return `
-    < div style = "margin:2rem 0; padding:2rem; background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border-color);" >
+    <div style="margin:2rem 0; padding:2rem; background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border-color);">
                 <h2 style="color:var(--bg-accent); margin-bottom:20px; display:flex; align-items:center; gap:10px;"><i data-lucide="crosshair"></i> Oyun Performans Analizi (Tahmini)</h2>
                 
                 <div style="margin-bottom:15px;">
@@ -1715,7 +1675,7 @@ const App = {
                         <div style="height:100%; width:${calcWidth(cyber, 150)}%; background:var(--text-red); border-radius:6px; transition:width 1.5s;"></div>
                     </div>
                 </div>
-            </div >
+            </div>
     `;
     },
 
@@ -1724,16 +1684,16 @@ const App = {
         if (product.category === 'gpu' || product.category === 'cpu') suggestedCategory = 'cooling';
         if (product.category === 'mainboard') suggestedCategory = 'ram';
         if (product.category === 'laptop') suggestedCategory = 'accessories';
-        
+
         const suggestedProducts = Store.state.products.filter(p => p.category === suggestedCategory);
         if (suggestedProducts.length === 0) return;
-        
+
         const randomProduct = suggestedProducts[Math.floor(Math.random() * suggestedProducts.length)];
-        
+
         const modal = document.getElementById('cross-sell-modal');
         const content = document.getElementById('cross-sell-content');
-        
-        if(!modal || !content) return;
+
+        if (!modal || !content) return;
 
         content.innerHTML = `
     < button onclick = "document.getElementById('cross-sell-modal').style.display='none'" style = "position:absolute; top:10px; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer;" > <i data-lucide="x"></i></button >
@@ -1745,7 +1705,7 @@ const App = {
             <button class="btn-primary full-width" onclick="Store.addToCart(${JSON.stringify(randomProduct).replace(/"/g, '&quot;')}); document.getElementById('cross-sell-modal').style.display='none';">BUNU DA SEPETE EKLE</button>
             <button class="btn-outline full-width mt-1" onclick="document.getElementById('cross-sell-modal').style.display='none'">İstemiyorum, Teşekkürler</button>
 `;
-        
+
         modal.style.display = 'flex';
         lucide.createIcons();
     }
